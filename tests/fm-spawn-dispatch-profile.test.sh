@@ -650,6 +650,69 @@ test_codex_omits_max_effort_without_catalog() {
   pass "codex omits max with a warning when the model catalog is absent"
 }
 
+test_codex_keeps_luna_max_effort_with_malformed_catalog() {
+  local rec id out status launch
+  id=profile-codex-max-badcache-z4f
+  rec=$(make_spawn_case profile-codex-max-badcache codex "$id")
+  read_case_record "$rec"
+  mkdir -p "$HOME_DIR/codex-home"
+  printf '{"models":' > "$HOME_DIR/codex-home/models_cache.json"
+
+  out=$(run_ship_spawn "$HOME_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$LAUNCH_LOG" "$id" "$PROJ_DIR" --model gpt-5.6-luna --effort max)
+  status=$?
+  expect_code 0 "$status" "codex spawn of Luna with a malformed catalog should succeed"
+  launch=$(cat "$LAUNCH_LOG")
+  assert_contains "$launch" "-c 'model_reasoning_effort=\"max\"'" \
+    "codex launch must keep Luna's max fallback when the catalog cannot be parsed"
+  assert_not_contains "$out" "does not advertise max" "Luna fallback on a malformed catalog must not warn"
+  pass "codex keeps Luna's max when the model catalog is malformed"
+}
+
+# Under config/launch-env-allowlist the launch runs through `env -i`, so a
+# CODEX_HOME that is not allowlisted never reaches the launched codex, which
+# then reads $HOME/.codex. The max decision must consult that same catalog.
+test_codex_max_catalog_follows_launch_env_allowlist() {
+  local rec id out status launch
+  id=profile-codex-max-allowlist-z4g
+  rec=$(make_spawn_case profile-codex-max-allowlist codex "$id")
+  read_case_record "$rec"
+  # Spawner CODEX_HOME advertises max for astra; the pane's $HOME/.codex does not.
+  write_codex_catalog "$HOME_DIR" gpt-6-astra:low,medium,high,xhigh,max
+  mkdir -p "$HOME_DIR/user-home/.codex"
+  printf '{"models":[{"slug":"gpt-6-astra","supported_reasoning_levels":[{"effort":"high"}]}]}\n' \
+    > "$HOME_DIR/user-home/.codex/models_cache.json"
+  printf '# no CODEX_HOME\n' > "$HOME_DIR/config/launch-env-allowlist"
+
+  out=$(run_ship_spawn "$HOME_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$LAUNCH_LOG" "$id" "$PROJ_DIR" --model gpt-6-astra --effort max)
+  status=$?
+  expect_code 0 "$status" "codex spawn under a launch-env allowlist should succeed"
+  launch=$(cat "$LAUNCH_LOG")
+  assert_not_contains "$launch" "model_reasoning_effort" \
+    "codex max must follow the catalog the env -i launch will read, not the spawner's CODEX_HOME"
+  assert_contains "$out" "does not advertise max reasoning effort in $HOME_DIR/user-home/.codex/models_cache.json" \
+    "codex warning must name the launch's catalog"
+  pass "codex max ignores a CODEX_HOME the launch-env allowlist drops"
+}
+
+test_codex_max_catalog_uses_allowlisted_codex_home() {
+  local rec id out status launch
+  id=profile-codex-max-allowlist-home-z4h
+  rec=$(make_spawn_case profile-codex-max-allowlist-home codex "$id")
+  read_case_record "$rec"
+  write_codex_catalog "$HOME_DIR" gpt-6-astra:low,medium,high,xhigh,max
+  printf 'CODEX_HOME\n' > "$HOME_DIR/config/launch-env-allowlist"
+
+  out=$(run_ship_spawn "$HOME_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$LAUNCH_LOG" "$id" "$PROJ_DIR" --model gpt-6-astra --effort max)
+  status=$?
+  expect_code 0 "$status" "codex spawn with CODEX_HOME allowlisted should succeed"
+  launch=$(cat "$LAUNCH_LOG")
+  # The allowlist re-quotes the launch inside `sh -c`, so match the value only.
+  assert_contains "$launch" "model_reasoning_effort=\"max\"" \
+    "an allowlisted CODEX_HOME reaches the launch, so its catalog decides max"
+  assert_not_contains "$out" "does not advertise max" "an allowlisted CODEX_HOME catalog advertising max must not warn"
+  pass "codex max uses an allowlisted CODEX_HOME's catalog"
+}
+
 # Codex parks a crewmate launch forever on its unanswerable hook-trust modal
 # unless the launch turns the hook layer off. These two cases pin the split:
 # a crewmate runs hook-free, a secondmate keeps the project hooks that carry its
@@ -1981,6 +2044,9 @@ test_codex_omits_max_effort_for_unsupported_model
 test_codex_threads_max_effort_for_any_advertising_model
 test_codex_keeps_luna_max_effort_without_catalog
 test_codex_omits_max_effort_without_catalog
+test_codex_keeps_luna_max_effort_with_malformed_catalog
+test_codex_max_catalog_follows_launch_env_allowlist
+test_codex_max_catalog_uses_allowlisted_codex_home
 test_codex_crewmate_launch_disables_the_hook_layer
 test_codex_secondmate_launch_keeps_the_hook_layer
 test_grok_threads_model_and_reasoning_effort
