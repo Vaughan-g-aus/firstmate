@@ -2586,6 +2586,21 @@ model_flag_for_harness() {
   esac
 }
 
+# True when codex's model catalog (${CODEX_HOME:-~/.codex}/models_cache.json)
+# lists <effort> in the supported_reasoning_levels of the model whose slug is
+# <model>. An absent catalog, an absent jq, an unlisted model, or the default
+# model establishes nothing and answers false.
+codex_model_advertises_effort() { # <model> <effort>
+  local model=$1 effort=$2 cache
+  [ -n "$model" ] && [ "$model" != default ] || return 1
+  command -v jq >/dev/null 2>&1 || return 1
+  cache=${CODEX_HOME:-${HOME:-}/.codex}/models_cache.json
+  [ -r "$cache" ] || return 1
+  jq -e --arg m "$model" --arg e "$effort" \
+    'any(.models[]? | select(.slug == $m) | .supported_reasoning_levels[]?; (.effort? // .) == $e)' \
+    "$cache" >/dev/null 2>&1
+}
+
 effort_flag_for_harness() {
   local harness=$1 effort=$2 model=${3:-}
   [ -n "$effort" ] && [ "$effort" != default ] || return 0
@@ -2596,14 +2611,18 @@ effort_flag_for_harness() {
     esac
     ;;
   codex)
-    # The installed codex config schema uses model_reasoning_effort. The
-    # installed model catalog supports max for gpt-5.6-luna; keep that level
-    # scoped to the model whose catalog entry advertises it.
+    # The installed codex config schema uses model_reasoning_effort. Only some
+    # models accept max, so pass it only when the requested model's entry in
+    # codex's own catalog advertises it; otherwise omit it with a warning
+    # (record-and-omit).
     case "$effort" in
     low | medium | high | xhigh) printf -- '-c %s ' "$(shell_quote "model_reasoning_effort=\"$effort\"")" ;;
     max)
-      [ "$model" = gpt-5.6-luna ] || return 0
-      printf -- '-c %s ' "$(shell_quote 'model_reasoning_effort="max"')"
+      if codex_model_advertises_effort "$model" max; then
+        printf -- '-c %s ' "$(shell_quote 'model_reasoning_effort="max"')"
+      else
+        echo "warning: codex model '${model:-default}' does not advertise max reasoning effort in ${CODEX_HOME:-${HOME:-}/.codex}/models_cache.json; launching at codex's default effort" >&2
+      fi
       ;;
     esac
     ;;
