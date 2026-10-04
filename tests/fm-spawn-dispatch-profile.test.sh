@@ -616,7 +616,7 @@ test_codex_threads_max_effort_for_any_advertising_model() {
   pass "codex receives max for any model whose catalog entry advertises it"
 }
 
-test_codex_omits_max_effort_without_catalog() {
+test_codex_keeps_luna_max_effort_without_catalog() {
   local rec id out status launch
   id=profile-codex-max-nocache-z4d
   rec=$(make_spawn_case profile-codex-max-nocache codex "$id")
@@ -624,11 +624,28 @@ test_codex_omits_max_effort_without_catalog() {
 
   out=$(run_ship_spawn "$HOME_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$LAUNCH_LOG" "$id" "$PROJ_DIR" --model gpt-5.6-luna --effort max)
   status=$?
-  expect_code 0 "$status" "codex spawn without a model catalog should omit the max effort flag"
+  expect_code 0 "$status" "codex spawn of Luna without a model catalog should succeed"
   assert_meta_profile "$HOME_DIR/state/$id.meta" codex gpt-5.6-luna max
   launch=$(cat "$LAUNCH_LOG")
+  assert_contains "$launch" "codex --model 'gpt-5.6-luna' -c 'model_reasoning_effort=\"max\"' --dangerously-bypass-approvals-and-sandbox" \
+    "codex launch must keep Luna's max fallback when the catalog is absent"
+  assert_not_contains "$out" "does not advertise max" "Luna fallback must not warn"
+  pass "codex keeps Luna's max when the model catalog is absent"
+}
+
+test_codex_omits_max_effort_without_catalog() {
+  local rec id out status launch
+  id=profile-codex-max-nocache-astra-z4e
+  rec=$(make_spawn_case profile-codex-max-nocache-astra codex "$id")
+  read_case_record "$rec"
+
+  out=$(run_ship_spawn "$HOME_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$LAUNCH_LOG" "$id" "$PROJ_DIR" --model gpt-6-astra --effort max)
+  status=$?
+  expect_code 0 "$status" "codex spawn without a model catalog should omit the max effort flag"
+  assert_meta_profile "$HOME_DIR/state/$id.meta" codex gpt-6-astra max
+  launch=$(cat "$LAUNCH_LOG")
   assert_not_contains "$launch" "model_reasoning_effort" "codex launch must omit max when no catalog proves support"
-  assert_contains "$out" "warning: codex model 'gpt-5.6-luna' does not advertise max reasoning effort" \
+  assert_contains "$out" "warning: codex model 'gpt-6-astra' does not advertise max reasoning effort" \
     "codex spawn must warn when it omits max for want of a catalog"
   pass "codex omits max with a warning when the model catalog is absent"
 }
@@ -1962,6 +1979,7 @@ test_codex_threads_model_and_effort
 test_codex_threads_model_and_max_effort
 test_codex_omits_max_effort_for_unsupported_model
 test_codex_threads_max_effort_for_any_advertising_model
+test_codex_keeps_luna_max_effort_without_catalog
 test_codex_omits_max_effort_without_catalog
 test_codex_crewmate_launch_disables_the_hook_layer
 test_codex_secondmate_launch_keeps_the_hook_layer

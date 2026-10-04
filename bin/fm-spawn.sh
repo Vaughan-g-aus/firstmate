@@ -2601,6 +2601,10 @@ codex_model_advertises_effort() { # <model> <effort>
     "$cache" >/dev/null 2>&1
 }
 
+codex_catalog_readable() {
+  command -v jq >/dev/null 2>&1 && [ -r "${CODEX_HOME:-${HOME:-}/.codex}/models_cache.json" ]
+}
+
 effort_flag_for_harness() {
   local harness=$1 effort=$2 model=${3:-}
   [ -n "$effort" ] && [ "$effort" != default ] || return 0
@@ -2614,11 +2618,13 @@ effort_flag_for_harness() {
     # The installed codex config schema uses model_reasoning_effort. Only some
     # models accept max, so pass it only when the requested model's entry in
     # codex's own catalog advertises it; otherwise omit it with a warning
-    # (record-and-omit).
+    # (record-and-omit). gpt-5.6-luna keeps its long-standing max as a fallback
+    # when the catalog is unreadable or jq is unavailable.
     case "$effort" in
     low | medium | high | xhigh) printf -- '-c %s ' "$(shell_quote "model_reasoning_effort=\"$effort\"")" ;;
     max)
-      if codex_model_advertises_effort "$model" max; then
+      if codex_model_advertises_effort "$model" max ||
+        { [ "$model" = gpt-5.6-luna ] && ! codex_catalog_readable; }; then
         printf -- '-c %s ' "$(shell_quote 'model_reasoning_effort="max"')"
       else
         echo "warning: codex model '${model:-default}' does not advertise max reasoning effort in ${CODEX_HOME:-${HOME:-}/.codex}/models_cache.json; launching at codex's default effort" >&2
