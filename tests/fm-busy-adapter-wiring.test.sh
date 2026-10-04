@@ -315,6 +315,27 @@ test_claude_hooks_never_written_through_a_symlink() {
   pass "claude spawn replaces a symlinked settings file with its own and leaves the shared target byte-identical"
 }
 
+file_mode() {  # <path>
+  if [ "$(uname)" = Darwin ]; then /usr/bin/stat -f %Lp "$1"; else stat -c %a "$1"; fi
+}
+
+# Replacing the wiring file must not widen a restrictive existing file's mode.
+test_claude_hooks_keep_an_existing_settings_mode() {
+  local rec id=busy-cl-mode out settings
+  rec=$(make_spawn_case claude-mode claude "$id")
+  read_case_record "$rec"
+  settings="$WT_DIR/.claude/settings.local.json"
+  mkdir -p "$WT_DIR/.claude"
+  printf '%s\n' '{}' >"$settings"
+  chmod 600 "$settings"
+  printf '%s\n' '.claude/settings.local.json' >>"$(git -C "$WT_DIR" rev-parse --git-path info/exclude)"
+  out=$(run_spawn "$HOME_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$id" "$PROJ_DIR")
+  expect_code 0 $? "claude spawn should succeed: $out"
+  jq -e '.hooks.Stop' "$settings" >/dev/null || fail "worktree settings lack the task's Stop hook"
+  [ "$(file_mode "$settings")" = 600 ] || fail "spawn widened a 0600 settings file to $(file_mode "$settings")"
+  pass "claude spawn keeps an existing settings file's restrictive mode when it replaces the file"
+}
+
 test_codex_unverified_until_a_semantic_source_exists() {
   local rec id=busy-cx-1 out state
   rec=$(make_spawn_case codex-unverified codex "$id")
@@ -457,6 +478,7 @@ test_opencode_plugin_semantic_lifecycle
 test_claude_hooks_semantic_lifecycle
 test_claude_hooks_stale_incarnation_harmless
 test_claude_hooks_never_written_through_a_symlink
+test_claude_hooks_keep_an_existing_settings_mode
 test_gemini_hooks_semantic_lifecycle
 test_gemini_hooks_stale_incarnation_harmless
 test_raw_gemini_launch_has_no_semantic_wiring

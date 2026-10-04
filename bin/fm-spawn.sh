@@ -4430,11 +4430,20 @@ exclude_path() {
 # share; writing through that link would overwrite the shared file, so every
 # linked worktree would run this task's hooks. The content lands in a temp file
 # beside the target and is renamed into place, after removing any symlink at
-# the path, so the link's target is left untouched.
+# the path, so the link's target is left untouched. The replacement keeps the
+# mode of whatever file the path already resolves to, so a restrictive 0600
+# settings file is never widened; a new file takes the umask default.
 write_wiring_file() {  # <path>; content on stdin
-  local path=$1 tmp mode
+  local path=$1 tmp mode=
   tmp=$(mktemp "$(dirname -- "$path")/.fm-wiring.XXXXXX") || return 1
-  mode=$(printf '%o' $((0666 & ~0$(umask))))
+  if [ -f "$path" ]; then
+    if [ "$(uname)" = Darwin ]; then
+      mode=$(/usr/bin/stat -L -f %Lp "$path" 2>/dev/null) || mode=
+    else
+      mode=$(stat -L -c %a "$path" 2>/dev/null) || mode=
+    fi
+  fi
+  [ -n "$mode" ] || mode=$(printf '%o' $((0666 & ~0$(umask))))
   if ! cat >"$tmp" || ! chmod "$mode" "$tmp"; then
     rm -f -- "$tmp"
     return 1
