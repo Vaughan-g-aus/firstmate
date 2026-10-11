@@ -113,6 +113,10 @@
       "audience": "agent-runtime"
     },
     {
+      "path": ".agents/skills/afk/references/daemon.md",
+      "audience": "agent-runtime"
+    },
+    {
       "path": ".agents/skills/ahoy/SKILL.md",
       "audience": "agent-runtime"
     },
@@ -122,6 +126,14 @@
     },
     {
       "path": ".agents/skills/bearings/SKILL.md",
+      "audience": "agent-runtime"
+    },
+    {
+      "path": ".agents/skills/bearings/references/contributions.md",
+      "audience": "agent-runtime"
+    },
+    {
+      "path": ".agents/skills/bearings/references/lavish-board.md",
       "audience": "agent-runtime"
     },
     {
