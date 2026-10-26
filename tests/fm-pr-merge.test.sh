@@ -4564,7 +4564,8 @@ test_allow_no_pipeline_is_attended_only_and_gitlab_only() {
 
 # A repository listed in config/merge-script-only merges only through its own
 # merge script, so fm-pr-merge refuses it before recording anything or calling
-# any forge, and names that script so the caller can run it instead. The match
+# any forge, and names the exact invocation - that script with the PR URL
+# appended, run from the firstmate home - so the caller can run it instead. The match
 # is on the forge path, so a GitLab project nested under subgroups is listed the
 # same way as a GitHub owner/repository.
 test_merge_script_only_repo_refuses_before_recording() {
@@ -4585,8 +4586,8 @@ test_merge_script_only_repo_refuses_before_recording() {
   set -e
 
   expect_code 2 "$rc" "merge-script-only: a listed repository should be refused"
-  assert_grep 'error: example/repo merges only through its own merge script (scripts/land-pr.sh --squash)' \
-    "$case_dir/stderr" "merge-script-only: the refusal did not name the repository's merge script"
+  assert_grep "error: example/repo merges only through its own merge script: run 'scripts/land-pr.sh --squash https://github.com/example/repo/pull/71' from $case_dir/home;" \
+    "$case_dir/stderr" "merge-script-only: the refusal did not name the merge script invocation with the PR URL and home directory"
   assert_no_grep 'pr=https://github.com/example/repo/pull/71' "$case_dir/state/task-x1.meta" \
     "merge-script-only: a refused merge recorded pr="
   assert_absent "$case_dir/state/task-x1.check.sh" \
@@ -4605,8 +4606,8 @@ test_merge_script_only_repo_refuses_before_recording() {
   set -e
 
   expect_code 2 "$rc" "merge-script-only-gitlab: a listed GitLab project should be refused"
-  assert_grep "error: $MR_PATH merges only through its own merge script (bin/land.sh)" "$case_dir/stderr" \
-    "merge-script-only-gitlab: the refusal did not name the project's merge script"
+  assert_grep "error: $MR_PATH merges only through its own merge script: run 'bin/land.sh $MR_URL' from $case_dir/home;" "$case_dir/stderr" \
+    "merge-script-only-gitlab: the refusal did not name the merge script invocation with the MR URL and home directory"
   [ -z "$(glab_merge_line "$case_dir/glab.log")" ] \
     || fail "merge-script-only-gitlab: the glab merge was invoked for a listed project"
 
@@ -4623,7 +4624,7 @@ test_merge_script_only_repo_refuses_before_recording() {
   set -e
 
   expect_code 2 "$rc" "merge-script-only-case: a listed repository in another case should be refused"
-  assert_grep 'error: Example-Org/Example-App merges only through its own merge script (unnamed)' \
+  assert_grep 'error: Example-Org/Example-App merges only through its own merge script, which config/merge-script-only does not name' \
     "$case_dir/stderr" "merge-script-only-case: the refusal did not match a mixed-case URL against a CRLF line"
   assert_no_grep 'pr merge' "$case_dir/gh.log" \
     "merge-script-only-case: the gh merge was invoked for a listed repository in another case"

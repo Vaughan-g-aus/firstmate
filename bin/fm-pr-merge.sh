@@ -13,7 +13,7 @@
 # parse below owns why.
 # A repository the home lists in config/merge-script-only is refused at the
 # same point, before anything is recorded, and the refusal names the command
-# that repository merges through instead.
+# that repository merges through instead, with the URL and directory it runs with.
 #
 # Merge method on GitHub defaults to --squash when the caller passes none of
 # --squash, --merge, --rebase, or --method after the optional -- separator.
@@ -247,8 +247,9 @@ fi
 # config/merge-script-only names repositories whose own merge script is the only
 # sanctioned merge path, so a merge through this script would bypass checks that
 # script owns. A listed repository is refused here, before anything is recorded
-# or any forge is called, and the refusal names that script so the caller can
-# run it instead. Forges treat owner and repository paths case-insensitively,
+# or any forge is called, and the refusal names the exact invocation - that
+# command with the pull request URL appended, run from the home - so the caller
+# can run it instead. Forges treat owner and repository paths case-insensitively,
 # so the match does too. docs/configuration.md owns the file format.
 MERGE_SCRIPT_ONLY="$FM_HOME/config/merge-script-only"
 if [ -e "$MERGE_SCRIPT_ONLY" ]; then
@@ -262,7 +263,11 @@ if [ -e "$MERGE_SCRIPT_ONLY" ]; then
     read -r msr_repo msr_cmd <<<"$msr_line"
     case "${msr_repo:-}" in '' | '#'*) continue ;; esac
     if [ "$(printf '%s' "$msr_repo" | tr '[:upper:]' '[:lower:]')" = "$msr_path" ]; then
-      echo "error: $PR_PATH merges only through its own merge script (${msr_cmd:-unnamed}); firstmate will not merge it (config/merge-script-only)" >&2
+      if [ -n "${msr_cmd:-}" ]; then
+        echo "error: $PR_PATH merges only through its own merge script: run '$msr_cmd $URL' from $FM_HOME; firstmate will not merge it (config/merge-script-only)" >&2
+      else
+        echo "error: $PR_PATH merges only through its own merge script, which config/merge-script-only does not name; firstmate will not merge it" >&2
+      fi
       exit 2
     fi
   done <"$MERGE_SCRIPT_ONLY"
