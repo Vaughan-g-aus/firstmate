@@ -4578,7 +4578,24 @@ test_merge_script_only_repo_refuses_before_recording() {
     'other/repo scripts/other-land.sh' \
     'example/repo scripts/land-pr.sh --squash' \
     > "$case_dir/home/config/merge-script-only"
+  cp "$case_dir/state/task-x1.meta" "$case_dir/meta.unrecorded"
 
+  # A task that has not recorded this pull request is not handed the invocation.
+  set +e
+  run_pr_merge "$case_dir" task-x1 https://github.com/example/repo/pull/71 \
+    > "$case_dir/stdout" 2> "$case_dir/stderr"
+  rc=$?
+  set -e
+  expect_code 2 "$rc" "merge-script-only-unrecorded: an unrecorded PR on a listed repository should be refused"
+  assert_grep 'record it with bin/fm-pr-check.sh first' "$case_dir/stderr" \
+    "merge-script-only-unrecorded: the refusal did not say to record the PR first"
+  assert_no_grep 'scripts/land-pr.sh' "$case_dir/stderr" \
+    "merge-script-only-unrecorded: an unrecorded PR was handed the merge script invocation"
+  cmp -s "$case_dir/meta.unrecorded" "$case_dir/state/task-x1.meta" \
+    || fail "merge-script-only-unrecorded: a refused merge changed the task metadata"
+
+  printf '%s\n' 'pr=https://github.com/example/repo/pull/71' >> "$case_dir/state/task-x1.meta"
+  cp "$case_dir/state/task-x1.meta" "$case_dir/meta.before"
   set +e
   run_pr_merge "$case_dir" task-x1 https://github.com/example/repo/pull/71 \
     > "$case_dir/stdout" 2> "$case_dir/stderr"
@@ -4588,8 +4605,8 @@ test_merge_script_only_repo_refuses_before_recording() {
   expect_code 2 "$rc" "merge-script-only: a listed repository should be refused"
   assert_grep "error: example/repo merges only through its own merge script: run 'scripts/land-pr.sh --squash https://github.com/example/repo/pull/71' from $case_dir/home;" \
     "$case_dir/stderr" "merge-script-only: the refusal did not name the merge script invocation with the PR URL and home directory"
-  assert_no_grep 'pr=https://github.com/example/repo/pull/71' "$case_dir/state/task-x1.meta" \
-    "merge-script-only: a refused merge recorded pr="
+  cmp -s "$case_dir/meta.before" "$case_dir/state/task-x1.meta" \
+    || fail "merge-script-only: a refused merge changed the task metadata"
   assert_absent "$case_dir/state/task-x1.check.sh" \
     "merge-script-only: a refused merge armed a merge poll"
   assert_no_grep 'pr merge' "$case_dir/gh.log" \
@@ -4599,6 +4616,7 @@ test_merge_script_only_repo_refuses_before_recording() {
 
   case_dir=$(make_gitlab_case merge-script-only-gitlab)
   printf '%s\n' "$MR_PATH bin/land.sh" > "$case_dir/home/config/merge-script-only"
+  printf '%s\n' "pr=$MR_URL" >> "$case_dir/state/task-x1.meta"
   set +e
   run_pr_merge "$case_dir" task-x1 "$MR_URL" \
     > "$case_dir/stdout" 2> "$case_dir/stderr"
@@ -4697,6 +4715,7 @@ test_merge_script_only_waits_for_role_binding_and_hold_refusals() {
   add_gh_mocks "$case_dir" 7575757575757575757575757575757575757575
   : > "$case_dir/gh-axi.log"
   printf '%s\n' 'example-org/example-app scripts/land-pr.sh' > "$case_dir/config-override/merge-script-only"
+  printf '%s\n' "pr=$url" >> "$case_dir/state/task-x1.meta"
   set +e
   FM_CONFIG_OVERRIDE="$case_dir/config-override" run_pr_merge "$case_dir" task-x1 "$url" \
     > "$case_dir/stdout" 2> "$case_dir/stderr"

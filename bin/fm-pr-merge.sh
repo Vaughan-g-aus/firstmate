@@ -1508,8 +1508,8 @@ require_recorded_pr_identity() {
 # script owns. A listed repository is refused before anything is recorded or any
 # forge is called, and only after the role, task-binding, and captain-hold
 # refusals, so the refusal names the exact invocation - that command with the
-# pull request URL appended, run from the home - only to a caller that could
-# merge this task now. Forges treat owner and repository paths
+# task's recorded pull request URL appended, run from the home - only to a
+# caller that could merge this task now. Forges treat owner and repository paths
 # case-insensitively, so the match does too. docs/configuration.md owns the
 # file format.
 refuse_merge_script_only_repo() {
@@ -1527,11 +1527,15 @@ refuse_merge_script_only_repo() {
     case "${msr_repo:-}" in '' | '#'*) continue ;; esac
     [ "$(printf '%s' "$msr_repo" | tr '[:upper:]' '[:lower:]')" = "$msr_path" ] || continue
     require_released_captain_hold || return 1
-    if [ -n "${msr_cmd:-}" ]; then
-      echo "error: $PR_PATH merges only through its own merge script: run '$msr_cmd $URL' from $FM_HOME; firstmate will not merge it (config/merge-script-only)" >&2
-    else
+    if [ -z "${msr_cmd:-}" ]; then
       echo "error: $PR_PATH merges only through its own merge script, which config/merge-script-only does not name; firstmate will not merge it" >&2
+      return 2
     fi
+    if [ "$(grep '^pr=' "$META" | tail -1 | cut -d= -f2- || true)" != "$URL" ]; then
+      echo "error: $PR_PATH merges only through its own merge script, run with the task's recorded pr=, and task $ID has not recorded $URL; record it with bin/fm-pr-check.sh first (config/merge-script-only)" >&2
+      return 2
+    fi
+    echo "error: $PR_PATH merges only through its own merge script: run '$msr_cmd $URL' from $FM_HOME; firstmate will not merge it (config/merge-script-only)" >&2
     return 2
   done <"$list"
 }
