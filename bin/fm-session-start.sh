@@ -1180,7 +1180,10 @@ if [ "$COMPACT_REEMIT" -eq 1 ]; then
   cat <<'EOF'
 This compact digest prints counts, one line per recorded task, and source paths
 instead of full sources. Do NOT bulk-read the sources back: that refills the
-context the compaction just freed. Read one only when this turn's work needs it:
+context the compaction just freed. One exception: after a compaction, read
+data/captain.md and data/captain-shared.md (when present) once before the first
+captain-facing reply or any mutating action, regardless of whether the summary
+seems to need them. Read any other source only when this turn's work needs it:
   - a task's meta or full status log: state/<id>.meta, state/<id>.status,
     or its current state: bin/fm-crew-state.sh <id>,
   - backlog rows: bin/fm-tasks-axi.sh list --state <state>, bin/fm-tasks-axi.sh

@@ -2471,6 +2471,9 @@ EOF
     "the compact re-emit does not open with its conditional spill cue"
   assert_contains "$compact" "SESSION START (CONTEXT RE-EMIT) - $home" "the compact re-emit did not label itself"
   assert_not_contains "$compact" "CAPTAIN_PREF_0001" "the compact re-emit printed data/captain.md in full"
+  assert_contains "$(printf '%s\n' "$compact" | tr '\n' ' ')" \
+    "after a compaction, read data/captain.md and data/captain-shared.md (when present) once before the first captain-facing reply or any mutating action, regardless of whether the summary seems to need them." \
+    "the compact re-emit did not require a captain preference re-read before acting"
   assert_not_contains "$compact" "LEARNING_0001" "the compact re-emit printed data/learnings.md in full"
   assert_not_contains "$compact" "BACKLOG_BODY_01" "the compact re-emit printed backlog bodies"
   assert_contains "$compact" "data/captain.md: present" "the compact re-emit dropped the captain.md pointer"
