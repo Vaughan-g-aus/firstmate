@@ -1,9 +1,10 @@
 # shellcheck shell=bash
 # Launch environment (config/launch-env-allowlist) and the codex model catalog
 # that a launch reads through it. bin/fm-spawn.sh owns the launch itself; this
-# library exists so the start-up check in bin/fm-bootstrap.sh answers "would
-# fm-spawn pass codex max for this model?" with the launch's own code path
-# instead of a second parser that drifts.
+# library exists so the start-up check in bin/fm-bootstrap.sh and the typed
+# dispatch validator in bin/fm-dispatch-resolve.sh answer "would fm-spawn pass
+# codex max for this model?" with the launch's own code path instead of a
+# second parser that drifts.
 #
 # fm_launch_env_load <config-dir>
 #   Sets LAUNCH_ENV_ENABLED (1 when config/launch-env-allowlist is present, 0

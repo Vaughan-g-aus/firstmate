@@ -3347,8 +3347,8 @@ model_flag_for_harness() {
 
 # codex_catalog_path, codex_catalog_usable, codex_model_advertises_effort, and
 # codex_max_effort_launches come from fm-launch-env-lib.sh, which bootstrap's
-# crew-dispatch check shares so it accepts codex max exactly when a launch
-# would pass it.
+# crew-dispatch check and bin/fm-dispatch-resolve.sh share so they accept codex
+# max exactly when a launch would pass it.
 effort_flag_for_harness() {
   local harness=$1 effort=$2 model=${3:-} oc_major=${4:-}
   if [ "$harness" != opencode ]; then
