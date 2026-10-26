@@ -2466,6 +2466,9 @@ EOF
     || fail "the compact re-emit is ${#compact} characters, over Claude's 10,000-character hook output cap"
   [ "$(printf '%s' "$compact" | wc -c)" -lt 16384 ] || fail "the compact re-emit exceeds 16 KB"
   assert_not_contains "$compact" "RE-EMIT CUE" "the compact re-emit still asks for a whole-file read"
+  assert_contains "$(printf '%s\n' "$compact" | head -n 1)" \
+    'SPILL CUE: only if this output was cut to a preview with "Full output saved to <path>", read that file now.' \
+    "the compact re-emit does not open with its conditional spill cue"
   assert_contains "$compact" "SESSION START (CONTEXT RE-EMIT) - $home" "the compact re-emit did not label itself"
   assert_not_contains "$compact" "CAPTAIN_PREF_0001" "the compact re-emit printed data/captain.md in full"
   assert_not_contains "$compact" "LEARNING_0001" "the compact re-emit printed data/learnings.md in full"
@@ -2492,6 +2495,7 @@ EOF
   clear_out=$(FM_FAKE_HARNESS_PID=$$ run_named_harness_session_start claude "$home" "$root" "$fakebin:$BASE_PATH" \
     --reemit --source clear)
   assert_contains "$clear_out" "RE-EMIT CUE" "a clear re-emit lost its read cue"
+  assert_not_contains "$clear_out" "SPILL CUE" "a clear re-emit printed the compact spill cue"
   assert_contains "$clear_out" "CAPTAIN_PREF_0001" "a clear re-emit stopped printing the full context"
 
   pass "a compact re-emit stays under the hook output cap with counts, task lines, paths, and the full wake queue"

@@ -243,7 +243,8 @@ Native stdout context injection is supported.
 Claude caps one hook output string at 10,000 characters.
 Above the cap the model receives a preview of the first 2,000 characters plus the path of a saved file, and is not asked to read that file.
 A `clear` re-emit therefore prints a short `RE-EMIT CUE` first, which tells the model to read the saved file.
-A `compact` re-emit instead prints a compact digest of counts, task lines, and on-demand paths that fits under the cap, with no cue, because compaction recurs and a whole-file read would refill the context it just freed.
+A `compact` re-emit instead prints a compact digest of counts, task lines, and on-demand paths that fits under the cap for a typical fleet, because compaction recurs and a whole-file read would refill the context it just freed.
+Its first line is a one-line `SPILL CUE` that asks for the saved file only when the output was actually cut to a preview, since the wake queue, per-task lines, and public commitments grow without a bound.
 
 ### Codex exec
 

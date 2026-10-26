@@ -226,7 +226,10 @@
 #             head still tells the model to read the saved full output.
 #
 #             A `--source compact` re-emit prints the COMPACT DIGEST instead,
-#             with no RE-EMIT CUE. Compaction recurs all session long, and a
+#             with a one-line SPILL CUE in place of the RE-EMIT CUE: it asks for
+#             the saved file only when the output was actually cut to a preview,
+#             never on a compaction that arrived inline. Compaction recurs all
+#             session long, and a
 #             full digest there was persisted by Claude's 10,000-character hook
 #             cap and then read back whole by the cue, refilling the context the
 #             compaction had just freed. The compact digest keeps the lock,
@@ -238,9 +241,11 @@
 #             recorded task (kind, endpoint liveness, PR, capped last status),
 #             orphan status ids, and each context file's path and size. A
 #             typical fleet's compact digest stays under that cap so it arrives
-#             inline; only the wake queue and the Pi instruction refresh below
-#             are unbounded, because neither may be cut. Other sources keep the
-#             full re-emit.
+#             inline. It is not bounded, though: the wake queue and the Pi
+#             instruction refresh below may not be cut, and the per-task lines,
+#             orphan status ids, and public commitments grow with the fleet, so
+#             a large fleet or a wake burst can still spill and relies on the
+#             SPILL CUE. Other sources keep the full re-emit.
 #
 #   --source  The native session-open source, supplied only by
 #             fm-sessionstart-run.sh. A genuine `startup` that owns the active
@@ -932,6 +937,7 @@ if [ "$REEMIT" -eq 0 ] && [ "$SESSION_SOURCE" = startup ]; then
 fi
 
 if [ "$COMPACT_REEMIT" -eq 1 ]; then
+  printf 'SPILL CUE: only if this output was cut to a preview with "Full output saved to <path>", read that file now.\n'
   section "SESSION START (CONTEXT RE-EMIT) - $FM_HOME"
   printf 'This session already took the helm at its own startup and has only been\n'
   printf 'compacted. Lock ownership is re-verified, and the startup sweeps are NOT repeated.\n'
