@@ -4609,6 +4609,24 @@ test_merge_script_only_repo_refuses_before_recording() {
     "merge-script-only-gitlab: the refusal did not name the project's merge script"
   [ -z "$(glab_merge_line "$case_dir/glab.log")" ] \
     || fail "merge-script-only-gitlab: the glab merge was invoked for a listed project"
+
+  # Forge paths are case-insensitive, and a CRLF-saved line still matches.
+  case_dir=$(make_case merge-script-only-case)
+  mkdir -p "$case_dir/wt"
+  add_gh_mocks "$case_dir" 7474747474747474747474747474747474747474
+  : > "$case_dir/gh-axi.log"
+  printf 'example-org/example-app\r\n' > "$case_dir/home/config/merge-script-only"
+  set +e
+  run_pr_merge "$case_dir" task-x1 https://github.com/Example-Org/Example-App/pull/74 \
+    > "$case_dir/stdout" 2> "$case_dir/stderr"
+  rc=$?
+  set -e
+
+  expect_code 2 "$rc" "merge-script-only-case: a listed repository in another case should be refused"
+  assert_grep 'error: Example-Org/Example-App merges only through its own merge script (unnamed)' \
+    "$case_dir/stderr" "merge-script-only-case: the refusal did not match a mixed-case URL against a CRLF line"
+  assert_no_grep 'pr merge' "$case_dir/gh.log" \
+    "merge-script-only-case: the gh merge was invoked for a listed repository in another case"
   pass "fm-pr-merge refuses a merge-script-only repository before recording or merging, naming its script"
 }
 

@@ -248,17 +248,20 @@ fi
 # sanctioned merge path, so a merge through this script would bypass checks that
 # script owns. A listed repository is refused here, before anything is recorded
 # or any forge is called, and the refusal names that script so the caller can
-# run it instead. docs/configuration.md owns the file format.
+# run it instead. Forges treat owner and repository paths case-insensitively,
+# so the match does too. docs/configuration.md owns the file format.
 MERGE_SCRIPT_ONLY="$FM_HOME/config/merge-script-only"
 if [ -e "$MERGE_SCRIPT_ONLY" ]; then
   if [ ! -f "$MERGE_SCRIPT_ONLY" ] || [ ! -r "$MERGE_SCRIPT_ONLY" ]; then
     echo "error: config/merge-script-only must be a readable regular file; firstmate will not merge $PR_PATH" >&2
     exit 2
   fi
+  msr_path=$(printf '%s' "$PR_PATH" | tr '[:upper:]' '[:lower:]')
   while IFS= read -r msr_line || [ -n "$msr_line" ]; do
+    msr_line=${msr_line%$'\r'}
     read -r msr_repo msr_cmd <<<"$msr_line"
     case "${msr_repo:-}" in '' | '#'*) continue ;; esac
-    if [ "$msr_repo" = "$PR_PATH" ]; then
+    if [ "$(printf '%s' "$msr_repo" | tr '[:upper:]' '[:lower:]')" = "$msr_path" ]; then
       echo "error: $PR_PATH merges only through its own merge script (${msr_cmd:-unnamed}); firstmate will not merge it (config/merge-script-only)" >&2
       exit 2
     fi
