@@ -234,12 +234,17 @@
 #             cap and then read back whole by the cue, refilling the context the
 #             compaction had just freed. The compact digest keeps the lock,
 #             home-role, bootstrap, wake-queue (in full: it is this turn's work),
-#             AFK, public-commitment, network-check, and next-step sections
-#             unchanged, and renders the rest as headings, counts, and on-demand
-#             paths: the supervision block as its repair line plus the exact
-#             command that re-renders it, backlog group counts, one line per
-#             recorded task (kind, endpoint liveness, PR, capped last status),
-#             orphan status ids, and each context file's path and size. A
+#             AFK, public-commitment, and network-check sections unchanged, and
+#             renders the rest as headings, counts, and on-demand paths: the
+#             supervision block as its repair line, labeled as applying only
+#             when a guard or hook reports a fault, plus the exact command that
+#             re-renders it, backlog group counts, one line per recorded task
+#             (kind, endpoint liveness, PR, capped last status), orphan status
+#             ids, and each context file's path and size. Its read-once
+#             contract still asks for one read of data/captain.md and
+#             data/captain-shared.md before the first captain-facing reply or
+#             mutating action, and its NEXT STEP points at the re-render
+#             command and calls the digest partial rather than complete. A
 #             typical fleet's compact digest stays under that cap so it arrives
 #             inline. It is not bounded, though: the wake queue and the Pi
 #             instruction refresh below may not be cut, and the per-task lines,
