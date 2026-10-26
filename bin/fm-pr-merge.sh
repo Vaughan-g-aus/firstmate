@@ -11,6 +11,9 @@
 # plus a "tea login" resolved fresh from the parsed host on every run. A Gerrit
 # change is refused outright: that adapter is read-only, and the refusal at the
 # parse below owns why.
+# A repository the home lists in config/merge-script-only is refused at the
+# same point, before anything is recorded, and the refusal names the command
+# that repository merges through instead.
 #
 # Merge method on GitHub defaults to --squash when the caller passes none of
 # --squash, --merge, --rebase, or --method after the optional -- separator.
@@ -240,6 +243,26 @@ PROJECT_URL="https://$FM_PR_HOST/$FM_PR_PATH"
 if [ "$PROVIDER" = gerrit ]; then
   echo "error: firstmate does not submit a Gerrit change: submitting requires an attributed human approval it must not manufacture, so a human submits the change on the server" >&2
   exit 2
+fi
+# config/merge-script-only names repositories whose own merge script is the only
+# sanctioned merge path, so a merge through this script would bypass checks that
+# script owns. A listed repository is refused here, before anything is recorded
+# or any forge is called, and the refusal names that script so the caller can
+# run it instead. docs/configuration.md owns the file format.
+MERGE_SCRIPT_ONLY="$FM_HOME/config/merge-script-only"
+if [ -e "$MERGE_SCRIPT_ONLY" ]; then
+  if [ ! -f "$MERGE_SCRIPT_ONLY" ] || [ ! -r "$MERGE_SCRIPT_ONLY" ]; then
+    echo "error: config/merge-script-only must be a readable regular file; firstmate will not merge $PR_PATH" >&2
+    exit 2
+  fi
+  while IFS= read -r msr_line || [ -n "$msr_line" ]; do
+    read -r msr_repo msr_cmd <<<"$msr_line"
+    case "${msr_repo:-}" in '' | '#'*) continue ;; esac
+    if [ "$msr_repo" = "$PR_PATH" ]; then
+      echo "error: $PR_PATH merges only through its own merge script (${msr_cmd:-unnamed}); firstmate will not merge it (config/merge-script-only)" >&2
+      exit 2
+    fi
+  done <"$MERGE_SCRIPT_ONLY"
 fi
 shift 2
 ATTENDED_OVERRIDE=false

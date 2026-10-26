@@ -4562,6 +4562,98 @@ test_allow_no_pipeline_is_attended_only_and_gitlab_only() {
   pass "fm-pr-merge --allow-no-pipeline is attended-only, takes no value, and applies only to GitLab"
 }
 
+# A repository listed in config/merge-script-only merges only through its own
+# merge script, so fm-pr-merge refuses it before recording anything or calling
+# any forge, and names that script so the caller can run it instead. The match
+# is on the forge path, so a GitLab project nested under subgroups is listed the
+# same way as a GitHub owner/repository.
+test_merge_script_only_repo_refuses_before_recording() {
+  local case_dir rc
+  case_dir=$(make_case merge-script-only)
+  mkdir -p "$case_dir/wt"
+  add_gh_mocks "$case_dir" 7171717171717171717171717171717171717171
+  : > "$case_dir/gh-axi.log"
+  printf '%s\n' '# repositories with their own merge path' '' \
+    'other/repo scripts/other-land.sh' \
+    'example/repo scripts/land-pr.sh --squash' \
+    > "$case_dir/home/config/merge-script-only"
+
+  set +e
+  run_pr_merge "$case_dir" task-x1 https://github.com/example/repo/pull/71 \
+    > "$case_dir/stdout" 2> "$case_dir/stderr"
+  rc=$?
+  set -e
+
+  expect_code 2 "$rc" "merge-script-only: a listed repository should be refused"
+  assert_grep 'error: example/repo merges only through its own merge script (scripts/land-pr.sh --squash)' \
+    "$case_dir/stderr" "merge-script-only: the refusal did not name the repository's merge script"
+  assert_no_grep 'pr=https://github.com/example/repo/pull/71' "$case_dir/state/task-x1.meta" \
+    "merge-script-only: a refused merge recorded pr="
+  assert_absent "$case_dir/state/task-x1.check.sh" \
+    "merge-script-only: a refused merge armed a merge poll"
+  assert_no_grep 'pr merge' "$case_dir/gh.log" \
+    "merge-script-only: the gh merge was invoked for a listed repository"
+  assert_no_grep 'pr merge' "$case_dir/gh-axi.log" \
+    "merge-script-only: the gh-axi merge was invoked for a listed repository"
+
+  case_dir=$(make_gitlab_case merge-script-only-gitlab)
+  printf '%s\n' "$MR_PATH bin/land.sh" > "$case_dir/home/config/merge-script-only"
+  set +e
+  run_pr_merge "$case_dir" task-x1 "$MR_URL" \
+    > "$case_dir/stdout" 2> "$case_dir/stderr"
+  rc=$?
+  set -e
+
+  expect_code 2 "$rc" "merge-script-only-gitlab: a listed GitLab project should be refused"
+  assert_grep "error: $MR_PATH merges only through its own merge script (bin/land.sh)" "$case_dir/stderr" \
+    "merge-script-only-gitlab: the refusal did not name the project's merge script"
+  [ -z "$(glab_merge_line "$case_dir/glab.log")" ] \
+    || fail "merge-script-only-gitlab: the glab merge was invoked for a listed project"
+  pass "fm-pr-merge refuses a merge-script-only repository before recording or merging, naming its script"
+}
+
+test_merge_script_only_leaves_unlisted_repositories_alone() {
+  local case_dir rc
+  case_dir=$(make_case merge-script-only-unlisted)
+  mkdir -p "$case_dir/wt"
+  add_gh_mocks "$case_dir" 7272727272727272727272727272727272727272
+  : > "$case_dir/gh-axi.log"
+  # Only the exact path matches: a longer repository name or a bare owner does not.
+  printf '%s\n' 'example/repo-tools scripts/land-pr.sh' 'example scripts/land-pr.sh' \
+    > "$case_dir/home/config/merge-script-only"
+
+  set +e
+  run_pr_merge "$case_dir" task-x1 https://github.com/example/repo/pull/72 \
+    > "$case_dir/stdout" 2> "$case_dir/stderr"
+  rc=$?
+  set -e
+
+  expect_code 0 "$rc" "merge-script-only-unlisted: an unlisted repository should merge"
+  assert_logged_gh_merge "$case_dir" 72 example/repo --squash
+  pass "fm-pr-merge merges a repository config/merge-script-only does not list"
+}
+
+test_unreadable_merge_script_only_refuses() {
+  local case_dir rc
+  case_dir=$(make_case merge-script-only-unreadable)
+  mkdir -p "$case_dir/wt" "$case_dir/home/config/merge-script-only"
+  add_gh_mocks "$case_dir" 7373737373737373737373737373737373737373
+  : > "$case_dir/gh-axi.log"
+
+  set +e
+  run_pr_merge "$case_dir" task-x1 https://github.com/example/repo/pull/73 \
+    > "$case_dir/stdout" 2> "$case_dir/stderr"
+  rc=$?
+  set -e
+
+  expect_code 2 "$rc" "merge-script-only-unreadable: an unreadable list should refuse"
+  assert_grep 'error: config/merge-script-only must be a readable regular file' "$case_dir/stderr" \
+    "merge-script-only-unreadable: the refusal did not name the unreadable list"
+  assert_no_grep 'pr merge' "$case_dir/gh.log" \
+    "merge-script-only-unreadable: the gh merge was invoked past an unreadable list"
+  pass "fm-pr-merge refuses when config/merge-script-only cannot be read"
+}
+
 test_gitlab_head_override_args_refuse_before_recording
 test_secondmate_merge_reports_upward_once
 test_secondmate_merge_reports_on_the_local_route
@@ -4620,3 +4712,6 @@ test_allow_red_refused_on_forgejo
 test_allow_missing_refused_on_forgejo
 test_allow_no_pipeline_merges_only_a_null_head_pipeline
 test_allow_no_pipeline_is_attended_only_and_gitlab_only
+test_merge_script_only_repo_refuses_before_recording
+test_merge_script_only_leaves_unlisted_repositories_alone
+test_unreadable_merge_script_only_refuses

@@ -752,6 +752,15 @@ The `direct-PR` and `local-only` modes, where ready means opened for review, and
 The child's own `done` line still reaches the parent through `bin/fm-inactive-reconcile.sh`.
 The flag is a home-local preference and is not inherited by secondmate homes; [`bin/fm-pr-check.sh`](../bin/fm-pr-check.sh) owns the mechanics.
 
+## Merge-script-only repositories (config/merge-script-only)
+
+The optional local, gitignored `config/merge-script-only` lists repositories whose own merge script is the only sanctioned way to merge, such as a script that serializes merges behind a lock or tests the merge result before landing it.
+Each line is `<path> <merge command>`, where `<path>` is the forge path from the pull request URL (`owner/repo` on GitHub or Forgejo, the full `group/subgroup/project` on GitLab) and the rest of the line is the command that merges instead; blank lines and `#` comments are ignored.
+`bin/fm-pr-merge.sh` refuses a listed repository before it records the pull request or calls any forge, and the refusal names that command.
+It is absent by default, so every repository merges through `bin/fm-pr-merge.sh` as before; a path that exists but is not a readable regular file refuses every merge rather than being skipped.
+While away, the away supervision session runs the named command itself under `bin/fm-pr-merge.sh`'s own limits, as the Postures section of [`bin/fm-branch-prompt.sh`](../bin/fm-branch-prompt.sh) states.
+The file is home-local and is not inherited by secondmate homes; [`bin/fm-pr-merge.sh`](../bin/fm-pr-merge.sh) owns the mechanics.
+
 ## Task status archive (config/status-archive)
 
 The optional local, gitignored `config/status-archive` presence flag opts this home into retaining task status history during teardown.
