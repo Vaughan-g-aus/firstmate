@@ -1,0 +1,18 @@
+ok - Codex absent, bypass, and restricted modes preserve flags for ships, scouts, and secondmates
+ok - invalid Codex permission files refuse spawns and relaunches before mutation
+ok - Codex restricted mode leaves other harness launch flags unchanged
+ok - codex receives --model and model_reasoning_effort profile flags
+ok - codex Luna receives --model and model_reasoning_effort max profile flags
+ok - codex omits max with a warning for models without the catalog capability
+ok - codex receives max for any model whose catalog entry advertises it
+ok - codex keeps Luna's max when the model catalog is absent
+ok - codex omits max with a warning when the model catalog is absent
+ok - codex keeps Luna's max when the model catalog is malformed
+ok - codex max ignores a CODEX_HOME the launch-env allowlist drops
+ok - codex max uses an allowlisted CODEX_HOME's catalog
+ok - a codex crewmate requests no hook layer and keeps its turn-end signal
+ok - a codex secondmate keeps its project hooks and uses automatic approval review
+ok - Codex defaults remain bypass; persistent fallback is direct and invalid values refuse
+ok - bootstrap gates resolver fields and additive harnesses on the typed key
+ok - bootstrap accepts codex max exactly when the launch catalog advertises it, with the Luna fallback only off a usable catalog
+ok - bootstrap judges codex max against the catalog the launch-env allowlist lets the launch read

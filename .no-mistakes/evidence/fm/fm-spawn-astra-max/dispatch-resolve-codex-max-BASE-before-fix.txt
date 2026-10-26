@@ -1,0 +1,7 @@
+### Case 1: codex catalog advertises max for gpt-6-astra
+{"models":[{"slug":"gpt-6-astra","supported_reasoning_levels":[{"effort":"high"},{"effort":"xhigh"},{"effort":"max"}]}]}
+$ CODEX_HOME=<catalog dir> fm-dispatch-resolve.sh brief.md
+  error: malformed rules file: <tmp>/home/config/crew-dispatch.json - each use profile effort must be supported by its harness and model
+  [exit 2]
+
+### Case 2: codex catalog does NOT advertise max for gpt-6-astra

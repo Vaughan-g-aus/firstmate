@@ -1,0 +1,38 @@
+### config/crew-dispatch.json
+{ "rules": [ { "when": "Hard root-cause investigation.",
+               "use": { "harness": "codex", "model": "gpt-6-astra", "effort": "max" } } ],
+  "default": { "harness": "claude", "model": "opus" } }
+
+### Case 1: codex catalog advertises max for gpt-6-astra
+{"models":[{"slug":"gpt-6-astra","supported_reasoning_levels":[{"effort":"high"},{"effort":"xhigh"},{"effort":"max"}]}]}
+$ CODEX_HOME=<catalog dir> fm-dispatch-resolve.sh brief.md
+  dispatch-resolve:
+    status: clear
+    model: jev-1.13.0   latency_ms: 20   tokens: 1/1
+    rule: rule_1 (Hard root-cause investigation.)   confidence: 0.93
+    probabilities: rule_1=0.93 default=0.07
+    note: rule matched
+    candidate: codex:gpt-6-astra  provider=codex  scope=all_models  remaining=80%  spendPriority=0.5  runway=through_reset  -> eligible
+    profile: --harness 'codex' --model 'gpt-6-astra' --effort 'max'
+  [exit 0]
+
+### Case 2: codex catalog does NOT advertise max for gpt-6-astra
+{"models":[{"slug":"gpt-6-astra","supported_reasoning_levels":[{"effort":"high"},{"effort":"xhigh"}]}]}
+$ CODEX_HOME=<catalog dir> fm-dispatch-resolve.sh brief.md
+  error: malformed rules file: <tmp>/home/config/crew-dispatch.json - each use profile effort must be supported by its harness and model
+  [exit 2]
+
+### Shared rule (bin/fm-launch-env-lib.sh codex_max_effort_launches), the same function fm-spawn, bootstrap and the resolver call
+catalog                            model          max passed?
+advertising                        gpt-6-astra    yes
+advertising                        gpt-5.6-luna   yes
+advertising                        gpt-5          no
+lacking                            gpt-6-astra    no
+lacking                            gpt-5.6-luna   no
+lacking                            gpt-5          no
+none                               gpt-6-astra    no
+none                               gpt-5.6-luna   yes
+none                               gpt-5          no
+malformed                          gpt-6-astra    no
+malformed                          gpt-5.6-luna   yes
+malformed                          gpt-5          no
