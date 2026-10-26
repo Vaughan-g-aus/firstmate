@@ -34,7 +34,17 @@
 #   advertises max, or when the model is gpt-5.6-luna and the catalog is
 #   unusable, in which case Luna keeps its long-standing max as a fallback.
 #   fm-spawn passes model_reasoning_effort="max" exactly when this is true, and
-#   bootstrap accepts a codex max profile exactly when this is true.
+#   bootstrap and bin/fm-dispatch-resolve.sh accept a codex max profile exactly
+#   when this is true.
+#
+# crew_dispatch_codex_max_models <config-dir> <file>
+#   The codex models among <file>'s rule and default profiles whose max effort
+#   a launch would pass, as a JSON array of slugs, from codex_max_effort_launches
+#   against the catalog the launch itself reads, including the launch-env
+#   allowlist's CODEX_HOME drop. A malformed allowlist refuses every spawn on
+#   its own; here it only means the ambient CODEX_HOME is assumed to reach the
+#   launch. Sets LAUNCH_ENV_ENABLED and LAUNCH_ENV_NAMES, so call it in a
+#   command substitution.
 
 fm_launch_env_load() { # <config-dir>
   local config=$1
@@ -84,4 +94,28 @@ codex_max_effort_launches() { # <cache> <model>
   local cache=$1 model=$2
   codex_model_advertises_effort "$cache" "$model" max ||
     { [ "$model" = gpt-5.6-luna ] && ! codex_catalog_usable "$cache"; }
+}
+
+crew_dispatch_codex_max_models() { # <config-dir> <file>
+  local config=$1 file=$2 cache model models='[]'
+  if ! fm_launch_env_load "$config" 2>/dev/null; then
+    LAUNCH_ENV_ENABLED=0
+    LAUNCH_ENV_NAMES=
+  fi
+  cache=$(codex_catalog_path)
+  while IFS= read -r model; do
+    [ -n "$model" ] || continue
+    codex_max_effort_launches "$cache" "$model" || continue
+    models=$(jq -cn --argjson models "$models" --arg model "$model" '$models + [$model]')
+  done < <(jq -r '
+    def profiles($value):
+      if ($value | type) == "array" then $value[]
+      elif ($value | type) == "object" then $value
+      else empty
+      end;
+    [(.rules // [])[]? | profiles(.use?)] + [profiles(.default?)]
+    | map(select(type == "object" and .harness == "codex" and .effort == "max" and (.model | type) == "string"))
+    | map(.model) | unique[]
+  ' "$file" 2>/dev/null)
+  printf '%s\n' "$models"
 }
