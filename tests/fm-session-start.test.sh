@@ -2494,12 +2494,21 @@ EOF
   assert_contains "$compact" "fm-supervision-instructions.sh --harness claude --read-only 0" \
     "the compact re-emit did not point at the full supervision block"
   assert_contains "$compact" "NEXT STEP" "the compact re-emit dropped the closing reminder"
+  assert_contains "$compact" "If a guard or hook reports supervision missing or failed: watcher supervision needs Stop-owned automatic recovery" \
+    "the compact re-emit printed the supervision repair line as an unconditional fault"
+  assert_contains "$compact" "Follow the full operating block printed by the re-render command above for harness 'claude'." \
+    "the compact NEXT STEP did not point at the re-render command"
+  assert_not_contains "$compact" "supervision operating instructions block above" \
+    "the compact NEXT STEP pointed at a supervision block it did not print"
+  assert_not_contains "$compact" "The digest above is complete" "the compact NEXT STEP called the partial digest complete"
 
   clear_out=$(FM_FAKE_HARNESS_PID=$$ run_named_harness_session_start claude "$home" "$root" "$fakebin:$BASE_PATH" \
     --reemit --source clear)
   assert_contains "$clear_out" "RE-EMIT CUE" "a clear re-emit lost its read cue"
   assert_not_contains "$clear_out" "SPILL CUE" "a clear re-emit printed the compact spill cue"
   assert_contains "$clear_out" "CAPTAIN_PREF_0001" "a clear re-emit stopped printing the full context"
+  assert_contains "$clear_out" "The digest above is complete for this session start." \
+    "a clear re-emit lost its complete-digest closing line"
 
   pass "a compact re-emit stays under the hook output cap with counts, task lines, paths, and the full wake queue"
 }

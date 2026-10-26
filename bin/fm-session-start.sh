@@ -1153,9 +1153,11 @@ if [ "$COMPACT_REEMIT" -eq 1 ]; then
   # The full block is about 8KB, most of the compact digest's inline budget, so
   # it becomes its repair line plus the exact command that re-renders it.
   section "SUPERVISION OPERATING INSTRUCTIONS - primary harness: $PRIMARY_HARNESS (compact)"
-  "$SCRIPT_DIR/fm-supervision-instructions.sh" \
+  SUPERVISION_REPAIR_LINE=$("$SCRIPT_DIR/fm-supervision-instructions.sh" \
     --harness "$PRIMARY_HARNESS" --read-only "$READ_ONLY" --afk "$AFK_PRESENT" \
-    --afk-mode "$AFK_MODE" --x-mode "$X_MODE_PRESENT" --repair-line 2>/dev/null || true
+    --afk-mode "$AFK_MODE" --x-mode "$X_MODE_PRESENT" --repair-line 2>/dev/null || true)
+  [ -z "$SUPERVISION_REPAIR_LINE" ] \
+    || printf 'If a guard or hook reports supervision missing or failed: %s\n' "$SUPERVISION_REPAIR_LINE"
   printf 'Full operating block, before arming, repairing, or handling a wake whose protocol this context no longer holds:\n'
   printf '%s/fm-supervision-instructions.sh --harness %s --read-only %s --afk %s --afk-mode %s --x-mode %s\n' \
     "$SCRIPT_DIR" "$PRIMARY_HARNESS" "$READ_ONLY" "$AFK_PRESENT" "$AFK_MODE" "$X_MODE_PRESENT"
@@ -1280,6 +1282,15 @@ fi
 # --- 9. closing reminder -----------------------------------------------
 stage next-step
 section "NEXT STEP"
+if [ "$COMPACT_REEMIT" -eq 1 ]; then
+  SUPERVISION_REF="the full operating block printed by the re-render command above"
+  SUPERVISION_REF_WRAPPED="the full operating block printed by the re-render
+command above"
+else
+  SUPERVISION_REF="the supervision operating instructions block above"
+  SUPERVISION_REF_WRAPPED="the supervision operating instructions block
+above"
+fi
 if [ "$READ_ONLY" -eq 1 ]; then
   cat <<'EOF'
 This session did not acquire the fleet lock. Stay read-only: do not arm,
@@ -1288,38 +1299,44 @@ with verified fleet-lock ownership may perform mutable follow-up.
 
 EOF
 elif [ "$AFK_PRESENT" -eq 1 ] && [ "$AFK_MODE" = quiet ]; then
-  cat <<'EOF'
-Quiet mode is active. Follow the supervision operating instructions block
-above: load /quiet and ensure the daemon is running, because the daemon owns
+  cat <<EOF
+Quiet mode is active. Follow $SUPERVISION_REF_WRAPPED: load /quiet and ensure the daemon is running, because the daemon owns
 watcher supervision. Ordinary captain chat does not exit it; only an
 explicit /quiet off does.
 
 EOF
 elif [ "$AFK_PRESENT" -eq 1 ]; then
-  cat <<'EOF'
-Away mode is active. Follow the supervision operating instructions block above:
+  cat <<EOF
+Away mode is active. Follow $SUPERVISION_REF:
 load /afk and ensure the daemon is running, because the daemon owns watcher
 supervision.
 
 EOF
 elif [ -f "$CONFIG/x-mode.env" ]; then
   cat <<EOF
-Follow the supervision operating instructions block above for harness '$PRIMARY_HARNESS'.
+Follow $SUPERVISION_REF for harness '$PRIMARY_HARNESS'.
 X mode is active, so the emitted block's cadence instruction applies.
 This script never starts supervision itself.
 
 EOF
 else
 cat <<EOF
-Follow the supervision operating instructions block above for harness '$PRIMARY_HARNESS'.
+Follow $SUPERVISION_REF for harness '$PRIMARY_HARNESS'.
 This script never starts supervision itself.
 
 EOF
 fi
+if [ "$COMPACT_REEMIT" -eq 1 ]; then
+  cat <<'EOF'
+This compact digest is deliberately partial. The READ-ONCE CONTRACT section
+near the top of it governs what may still be read from disk.
+EOF
+else
 cat <<'EOF'
 The digest above is complete for this session start. The READ-ONCE CONTRACT
 section near the top of it governs what may still be read from disk.
 EOF
+fi
 
 if [ "$READ_ONLY" -eq 0 ] && [ "$REEMIT" -eq 0 ]; then
   COMPLETION_RECORDED=0
