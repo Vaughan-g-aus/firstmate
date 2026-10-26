@@ -1,0 +1,42 @@
+=== Sandbox home: /tmp/fm-pr-merge-tests.cLpSA5/demo/home ===
+--- config/merge-script-only ---
+# repositories whose own merge script is the only merge path
+example-org/example-app scripts/land-pr.sh --squash
+
+### 1. Listed repository, task has not recorded pr= yet
+$ run_pr_merge /tmp/fm-pr-merge-tests.cLpSA5/demo task-x1 https://github.com/example-org/example-app/pull/71
+error: example-org/example-app merges only through its own merge script, run with the task's recorded pr=, and task task-x1 has not recorded https://github.com/example-org/example-app/pull/71; record it with bin/fm-pr-check.sh first (config/merge-script-only)
+[exit 2]
+
+### 2. Listed repository, task recorded pr=https://github.com/example-org/example-app/pull/71
+$ run_pr_merge /tmp/fm-pr-merge-tests.cLpSA5/demo task-x1 https://github.com/example-org/example-app/pull/71
+error: example-org/example-app merges only through its own merge script: run 'scripts/land-pr.sh --squash https://github.com/example-org/example-app/pull/71' from /tmp/fm-pr-merge-tests.cLpSA5/demo/home; firstmate will not merge it (config/merge-script-only)
+[exit 2]
+
+forge merge calls logged by gh mock: 0
+merge poll armed: no
+
+### 3. Attended supervision branch actor
+$ run_pr_merge /tmp/fm-pr-merge-tests.cLpSA5/demo task-x1 https://github.com/example-org/example-app/pull/71
+error: PR merge (fm-pr-merge) refused - the supervision branch never performs this action; report the outcome and leave it to main (role partition: docs/pi-supervision-branch.md)
+[exit 6]
+
+### 4. Running the handed invocation from the firstmate home (stub land script)
+$ (cd /tmp/fm-pr-merge-tests.cLpSA5/demo/home && timeout 600 scripts/land-pr.sh --squash https://github.com/example-org/example-app/pull/71)
+land-pr.sh cwd=/tmp/fm-pr-merge-tests.cLpSA5/demo/home args=--squash https://github.com/example-org/example-app/pull/71
+
+### 5. Unlisted repository merges through fm-pr-merge as before
+$ run_pr_merge /tmp/fm-pr-merge-tests.cLpSA5/demo-unlisted task-x1 https://github.com/example/repo/pull/72
+armed: state/task-x1.check.sh
+verified: https://github.com/example/repo/pull/72 is merged (state=MERGED, merged=true, isInMergeQueue=false)
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  watcher supervision needs Stop-owned automatic recovery; inspect the hook registration and startup status before ending the turn.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+verified: https://github.com/example/repo/pull/72 is open and mergeable, with every unwaived required check reported and every unwaived check green at head 7272727272727272727272727272727272727272
+[exit 0]
+
+gh merge call: pr merge 72 --repo example/repo --match-head-commit 7272727272727272727272727272727272727272 --squash

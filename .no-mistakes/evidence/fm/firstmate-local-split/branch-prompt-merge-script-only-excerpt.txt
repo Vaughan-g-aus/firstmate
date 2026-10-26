@@ -1,0 +1,12 @@
+# Excerpt of the emitted supervision branch prompt (bin/fm-branch-prompt.sh) covering config/merge-script-only
+91:One limit is prose only: no script stops you from running a repository's own merge command (`config/merge-script-only`, see Postures), so while attended you never run it.
+92-
+93-# Postures
+94-
+95-You run in one of two postures, and the posture is a file: the away-posture record `state/.afk-contract`, written only by `bin/fm-afk-contract.sh` in the same turn as the captain's `/afk` and archived by the return path on the captain's first ordinary message.
+--
+106:- A repository listed in `config/merge-script-only` merges only through the command that line names, never `bin/fm-pr-merge.sh`: a merge the words call for runs that named command yourself, under the same limits as `bin/fm-pr-merge.sh` above (green at the live head, never red or unreported, never a relaxing flag), with a hard `timeout` and synchronously.
+107-  Run it from the firstmate home directory with the pull request's full URL appended as its final argument, copied from the task's recorded `pr=` value and never assembled; the command is self-contained and handles its own checkout, so running it is the project's declared merge path, the role `bin/fm-pr-merge.sh` plays, and you still never write a project checkout yourself.
+108-  No script enforces those limits for that command, so you hold them yourself: never for a task under a captain hold, and only after re-checking that `state/.afk-contract` still exists immediately before you run it.
+109-  A refusal from that command that names a wait - the base branch busy or red, a check still running, a lock held, a timeout - is transient: report it routine and retry at the next wake or heartbeat while the words still call for the merge; never record it as MAIN needing to merge, because MAIN is parked and that leaves the merge waiting for the captain's return.
+110-  Before each retry, re-read the pull request's merged state and stop if it has already merged; after three identical refusals in a row, stop retrying and report it with verdict captain.
