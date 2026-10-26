@@ -744,24 +744,10 @@ CONFIG="${FM_CONFIG_OVERRIDE:-$FM_HOME/config}"
 . "$SCRIPT_DIR/fm-config-inherit-lib.sh"
 # shellcheck source=bin/fm-exclude-tools-lib.sh
 . "$SCRIPT_DIR/fm-exclude-tools-lib.sh"
-if ! LAUNCH_ENV_ENABLED=$(fm_config_source_present "$CONFIG/launch-env-allowlist"); then
-  exit 1
-fi
-LAUNCH_ENV_NAMES=
-if [ "$LAUNCH_ENV_ENABLED" = 1 ]; then
-  if [ ! -f "$CONFIG/launch-env-allowlist" ] || [ ! -r "$CONFIG/launch-env-allowlist" ]; then
-    echo "error: config/launch-env-allowlist must be a readable regular file" >&2
-    exit 1
-  fi
-  if ! LAUNCH_ENV_NAMES=$(jq -Rrs '
-    split("\n") | map(select(. != "" and (startswith("#") | not))) |
-    if all(.[]; test("^[A-Za-z_][A-Za-z0-9_]*$")) then .[]
-    else error("expected environment names only") end
-  ' "$CONFIG/launch-env-allowlist" 2>/dev/null); then
-    echo "error: config/launch-env-allowlist must contain one environment name per line, blank lines, or # comments" >&2
-    exit 1
-  fi
-fi
+# shellcheck source=bin/fm-launch-env-lib.sh
+. "$SCRIPT_DIR/fm-launch-env-lib.sh"
+# Sets LAUNCH_ENV_ENABLED and LAUNCH_ENV_NAMES (fm-launch-env-lib.sh header).
+fm_launch_env_load "$CONFIG" || exit 1
 # config/claude-permission-mode (header above): resolved once per spawn or
 # relaunch, before any mutation, so a malformed file refuses instead of
 # launching a worker on a permission posture the captain did not choose.
@@ -3359,40 +3345,10 @@ model_flag_for_harness() {
   esac
 }
 
-# The models_cache.json the launched codex will read. The pane, not this
-# process, supplies the launch environment: under config/launch-env-allowlist
-# the launch runs through `env -i`, so a CODEX_HOME that is not allowlisted is
-# unset there and codex falls back to $HOME/.codex (HOME is in the fixed floor).
-codex_catalog_path() {
-  local codex_home=${CODEX_HOME:-}
-  if [ "$LAUNCH_ENV_ENABLED" = 1 ]; then
-    case $'\n'"$LAUNCH_ENV_NAMES"$'\n' in
-    *$'\nCODEX_HOME\n'*) ;;
-    *) codex_home= ;;
-    esac
-  fi
-  printf '%s\n' "${codex_home:-${HOME:-}/.codex}/models_cache.json"
-}
-
-# True when the codex catalog is readable, jq is available, and the catalog
-# parses with a models array, so its answer about any model is authoritative.
-codex_catalog_usable() { # <cache>
-  command -v jq >/dev/null 2>&1 && [ -r "$1" ] &&
-    jq -e '.models | type == "array"' "$1" >/dev/null 2>&1
-}
-
-# True when the usable codex catalog <cache> lists <effort> in the
-# supported_reasoning_levels of the model whose slug is <model>. An unusable
-# catalog, an unlisted model, or the default model answers false.
-codex_model_advertises_effort() { # <cache> <model> <effort>
-  local cache=$1 model=$2 effort=$3
-  [ -n "$model" ] && [ "$model" != default ] || return 1
-  codex_catalog_usable "$cache" || return 1
-  jq -e --arg m "$model" --arg e "$effort" \
-    'any(.models[]? | select(.slug == $m) | .supported_reasoning_levels[]?; (.effort? // .) == $e)' \
-    "$cache" >/dev/null 2>&1
-}
-
+# codex_catalog_path, codex_catalog_usable, codex_model_advertises_effort, and
+# codex_max_effort_launches come from fm-launch-env-lib.sh, which bootstrap's
+# crew-dispatch check shares so it accepts codex max exactly when a launch
+# would pass it.
 effort_flag_for_harness() {
   local harness=$1 effort=$2 model=${3:-} oc_major=${4:-}
   if [ "$harness" != opencode ]; then
@@ -3415,8 +3371,7 @@ effort_flag_for_harness() {
     max)
       local cache
       cache=$(codex_catalog_path)
-      if codex_model_advertises_effort "$cache" "$model" max ||
-        { [ "$model" = gpt-5.6-luna ] && ! codex_catalog_usable "$cache"; }; then
+      if codex_max_effort_launches "$cache" "$model"; then
         printf -- '-c %s ' "$(shell_quote 'model_reasoning_effort="max"')"
       else
         echo "warning: codex model '${model:-default}' does not advertise max reasoning effort in $cache; launching at codex's default effort" >&2
