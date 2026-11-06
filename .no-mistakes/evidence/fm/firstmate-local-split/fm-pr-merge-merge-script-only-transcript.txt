@@ -1,0 +1,45 @@
+<case>/home/config/merge-script-only (mixed case, CRLF line endings):
+  # repos with their own merge path [CRLF]
+  Example-Org/Example-App scripts/land-pr.sh --squash [CRLF]
+
+### 1. listed repo, task has NOT recorded pr= -> refused, no invocation handed out
+$ bin/fm-pr-merge.sh task-x1 https://github.com/example-org/example-app/pull/75 
+error: example-org/example-app merges only through its own merge script, run with the task's recorded pr=, and task task-x1 has not recorded https://github.com/example-org/example-app/pull/75; record it with bin/fm-pr-check.sh first (config/merge-script-only)
+exit=2
+forge merge calls (gh/gh-axi mock logs): 0
+
+### 2. listed repo, recorded pr= matches -> refused, names exact invocation (command + PR URL) and directory
+$ bin/fm-pr-merge.sh task-x1 https://github.com/example-org/example-app/pull/75 
+error: example-org/example-app merges only through its own merge script: run 'scripts/land-pr.sh --squash https://github.com/example-org/example-app/pull/75' from <case>/home; firstmate will not merge it (config/merge-script-only)
+exit=2
+forge merge calls (gh/gh-axi mock logs): 0
+
+task meta after refusals (nothing recorded by fm-pr-merge, no merge poll armed):
+  window=fm-task-x1
+  worktree=<case>/wt
+  project=<case>/project
+  kind=ship
+  mode=no-mistakes
+  pr=https://github.com/example-org/example-app/pull/75
+  armed merge polls: 0
+
+### 3. supervision branch actor (attended) -> role refusal wins, no invocation
+$ FM_SUPERVISION_ACTOR=branch bin/fm-pr-merge.sh task-x1 https://github.com/example-org/example-app/pull/75 
+error: PR merge (fm-pr-merge) refused - the supervision branch never performs this action; report the outcome and leave it to main (role partition: docs/pi-supervision-branch.md)
+exit=6
+forge merge calls (gh/gh-axi mock logs): 0
+
+### 4. listed repo, task under captain hold -> refused for the hold, no invocation
+$ bin/fm-pr-merge.sh task-x1 https://github.com/example-org/example-app/pull/75 
+error: task task-x1 is still held for the captain; release it before merging
+exit=1
+forge merge calls (gh/gh-axi mock logs): 0
+
+### 5. unlisted repo (only a longer repo name is listed) -> merges normally through fm-pr-merge
+$ bin/fm-pr-merge.sh task-x1 https://github.com/example-org/example-app/pull/72 
+verified: https://github.com/example-org/example-app/pull/72 is open and mergeable, with every unwaived required check reported and every unwaived check green at head 7272727272727272727272727272727272727272
+armed: state/task-x1.check.sh
+verified: https://github.com/example-org/example-app/pull/72 is merged (state=MERGED, merged=true, isInMergeQueue=false)
+exit=0
+forge merge calls (gh/gh-axi mock logs): 1
+
