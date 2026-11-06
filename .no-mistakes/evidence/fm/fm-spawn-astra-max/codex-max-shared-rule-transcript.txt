@@ -1,0 +1,8 @@
+$ crew_dispatch_codex_max_models (CODEX_HOME catalog advertises max for gpt-6-astra and gpt-5.6-luna, not gpt-5; gpt-7-nova absent)
+["gpt-5.6-luna","gpt-6-astra"]
+
+$ crew_dispatch_codex_max_models (no catalog: only the Luna fallback survives)
+["gpt-5.6-luna"]
+
+$ launch-env-allowlist without CODEX_HOME (launch reads $HOME/.codex, which has no catalog)
+["gpt-5.6-luna"]
