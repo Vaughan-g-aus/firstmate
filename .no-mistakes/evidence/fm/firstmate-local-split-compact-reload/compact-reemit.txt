@@ -1,7 +1,7 @@
 SPILL CUE: only if this output was cut to a preview with "Full output saved to <path>", read that file now.
 
 ================================================================================
-SESSION START (CONTEXT RE-EMIT) - /tmp/fm-session-start-tests.m9cUEo/evidence/home
+SESSION START (CONTEXT RE-EMIT) - /tmp/fm-session-start-tests.9NOfZy/ev/home
 ================================================================================
 This session already took the helm at its own startup and has only been
 compacted. Lock ownership is re-verified, and the startup sweeps are NOT repeated.
@@ -11,7 +11,7 @@ digest) so this reload does not refill the context it just freed.
 
 LOCK
 --------------------------------------------------------------------------------
-lock acquired: harness pid 28554
+lock acquired: harness pid 2106414
 
 HOME ROLE
 --------------------------------------------------------------------------------
@@ -24,8 +24,8 @@ MISSING: quota-axi (install: npm install -g quota-axi)
 
 WAKE QUEUE
 --------------------------------------------------------------------------------
-1793004981	1	signal	task-01	done: wake queued after the compaction
-WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 1 --recovery-generation 36602.1793004981.qHEBWR
+1794016106	1	signal	task-01	done: queued after the compaction
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 1 --recovery-generation 2227234.1794016106.QH9WYu
 WARNING: watcher still down (same stale episode; last beat: never, grace 300s) - full banner already printed this episode.
 WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
 
@@ -34,7 +34,7 @@ SUPERVISION OPERATING INSTRUCTIONS - primary harness: claude (compact)
 ================================================================================
 If a guard or hook reports supervision missing or failed: watcher supervision needs Stop-owned automatic recovery; inspect the hook registration and startup status before ending the turn.
 Full operating block, before arming, repairing, or handling a wake whose protocol this context no longer holds:
-/home/vaughan/.no-mistakes/worktrees/65b2a7e4032c/01M5VPFP6VPRYF53WWS8E4CT08/bin/fm-supervision-instructions.sh --harness claude --read-only 0 --afk 0 --afk-mode away --x-mode 0
+/home/vaughan/.no-mistakes/worktrees/65b2a7e4032c/01M6STSFWWPWFGSNRANSVB6GW8/bin/fm-supervision-instructions.sh --harness claude --read-only 0 --afk 0 --afk-mode away --x-mode 0
 
 ================================================================================
 READ-ONCE CONTRACT
@@ -59,13 +59,35 @@ FLEET STATE
 
 data/backlog.md (counts)
 --------------------------------------------------------------------------------
-1 in flight, 0 held or blocked queued, 1 other queued (title-line counts; done rows omitted)
-Rows on demand: bin/fm-tasks-axi.sh list --state <in_flight|held|queued>, bin/fm-tasks-axi.sh ready, or /tmp/fm-session-start-tests.m9cUEo/evidence/home/data/backlog.md.
+12 in flight, 1 held or blocked queued, 40 other queued (title-line counts; done rows omitted)
+Rows on demand: bin/fm-tasks-axi.sh list --state <in_flight|held|queued>, bin/fm-tasks-axi.sh ready, or /tmp/fm-session-start-tests.9NOfZy/ev/home/data/backlog.md.
 
-Work under way (one line per state/*.meta; full records under /tmp/fm-session-start-tests.m9cUEo/evidence/home/state)
+Work under way (one line per state/*.meta; full records under /tmp/fm-session-start-tests.9NOfZy/ev/home/state)
 --------------------------------------------------------------------------------
-- task-01 (ship): endpoint alive (tmux fm-sess:task-01); pr=https://example.invalid/pull/1
-  last status: working [at=1]: implementing
+- task-01 (ship): endpoint alive (tmux fm-sess:task-01); pr=https://example.invalid/pull/01
+  last status: working: task 01 step 5
+- task-02 (ship): endpoint dead (tmux fm-sess:task-02); pr=https://example.invalid/pull/02
+  last status: working: task 02 step 5
+- task-03 (ship): endpoint dead (tmux fm-sess:task-03); pr=https://example.invalid/pull/03
+  last status: working: task 03 step 5
+- task-04 (ship): endpoint dead (tmux fm-sess:task-04); pr=https://example.invalid/pull/04
+  last status: working: task 04 step 5
+- task-05 (ship): endpoint dead (tmux fm-sess:task-05); pr=https://example.invalid/pull/05
+  last status: working: task 05 step 5
+- task-06 (ship): endpoint dead (tmux fm-sess:task-06); pr=https://example.invalid/pull/06
+  last status: working: task 06 step 5
+- task-07 (ship): endpoint dead (tmux fm-sess:task-07); pr=https://example.invalid/pull/07
+  last status: working: task 07 step 5
+- task-08 (ship): endpoint dead (tmux fm-sess:task-08); pr=https://example.invalid/pull/08
+  last status: working: task 08 step 5
+- task-09 (ship): endpoint dead (tmux fm-sess:task-09); pr=https://example.invalid/pull/09
+  last status: working: task 09 step 5
+- task-10 (ship): endpoint dead (tmux fm-sess:task-10); pr=https://example.invalid/pull/10
+  last status: working: task 10 step 5
+- task-11 (ship): endpoint dead (tmux fm-sess:task-11); pr=https://example.invalid/pull/11
+  last status: working: task 11 step 5
+- task-12 (ship): endpoint dead (tmux fm-sess:task-12); pr=https://example.invalid/pull/12
+  last status: working: task 12 step 5
 
 Orphan status logs (state/*.status without matching .meta)
 --------------------------------------------------------------------------------
@@ -86,9 +108,9 @@ CONTEXT (paths only - read a file when this turn's work depends on it)
 ================================================================================
 - data/projects.md: ABSENT
 - data/secondmates.md: ABSENT
-- data/captain.md: present, 80 bytes - /tmp/fm-session-start-tests.m9cUEo/evidence/home/data/captain.md
+- data/captain.md: present, 22000 bytes - /tmp/fm-session-start-tests.9NOfZy/ev/home/data/captain.md
 - data/captain-shared.md (shared, main-authoritative, read-only in secondmate homes): ABSENT
-- data/learnings.md: present, 29 bytes - /tmp/fm-session-start-tests.m9cUEo/evidence/home/data/learnings.md
+- data/learnings.md: present, 7650 bytes - /tmp/fm-session-start-tests.9NOfZy/ev/home/data/learnings.md
 
 ================================================================================
 NEXT STEP

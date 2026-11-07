@@ -1,11 +1,11 @@
 
 ================================================================================
-SESSION START - /tmp/fm-session-start-tests.m9cUEo/evidence/home
+SESSION START - /tmp/fm-session-start-tests.9NOfZy/ev/home
 ================================================================================
 
 LOCK
 --------------------------------------------------------------------------------
-lock acquired: harness pid 28554
+lock acquired: harness pid 2106414
 
 HOME ROLE
 --------------------------------------------------------------------------------
@@ -13,13 +13,13 @@ fm-role: user (default)
 
 BOOTSTRAP
 --------------------------------------------------------------------------------
-error: bootstrap cannot access configured backlog data directory /tmp/fm-session-start-tests.m9cUEo/evidence/home/data (automatic backlog transitions require tasks-axi 0.2.6 or newer with the required update and mv features)
+error: bootstrap cannot access configured backlog data directory /tmp/fm-session-start-tests.9NOfZy/ev/home/data (automatic backlog transitions require tasks-axi 0.2.6 or newer with the required update and mv features)
 
 WAKE QUEUE
 --------------------------------------------------------------------------------
 ●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ●  WATCHER DOWN - SUPERVISION IS OFF
-●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  12 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
 ●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
 ●  This is a supervision warning only; the guarded operation WILL still run.
 ●  repair missing watcher supervision according to the session-start block for this harness; do not use shell &.
@@ -114,10 +114,42 @@ data/backlog.md
 --------------------------------------------------------------------------------
 compact backlog listing (tasks-axi unavailable or incompatible; done rows omitted; every in-flight, held, and blocked title line kept; other queued bounded to 20; indented task bodies omitted)
 ## In flight
-- [ ] task-01 - first item
+- [ ] task-01 - in-flight work item 01
+- [ ] task-02 - in-flight work item 02
+- [ ] task-03 - in-flight work item 03
+- [ ] task-04 - in-flight work item 04
+- [ ] task-05 - in-flight work item 05
+- [ ] task-06 - in-flight work item 06
+- [ ] task-07 - in-flight work item 07
+- [ ] task-08 - in-flight work item 08
+- [ ] task-09 - in-flight work item 09
+- [ ] task-10 - in-flight work item 10
+- [ ] task-11 - in-flight work item 11
+- [ ] task-12 - in-flight work item 12
 ## Queued
-- [ ] queued-01 - later
-(shown 1 in-flight, 0 held or blocked queued, 1 of 1 other queued title line(s); 0 done row(s) omitted)
+- [ ] queued-01 - queued work item 01
+- [ ] queued-02 - queued work item 02
+- [ ] queued-03 - queued work item 03
+- [ ] queued-04 - queued work item 04
+- [ ] queued-05 - queued work item 05
+- [ ] queued-06 - queued work item 06
+- [ ] queued-07 - queued work item 07
+- [ ] queued-08 - queued work item 08
+- [ ] queued-09 - queued work item 09
+- [ ] queued-10 - queued work item 10
+- [ ] queued-11 - queued work item 11
+- [ ] queued-12 - queued work item 12
+- [ ] queued-13 - queued work item 13
+- [ ] queued-14 - queued work item 14
+- [ ] queued-15 - queued work item 15
+- [ ] queued-16 - queued work item 16
+- [ ] queued-17 - queued work item 17
+- [ ] queued-18 - queued work item 18
+- [ ] queued-19 - queued work item 19
+- [ ] queued-20 - queued work item 20
+- [ ] held-01 (hold: captain) - a captain decision
+(shown 12 in-flight, 1 held or blocked queued, 20 of 40 other queued title line(s); 0 done row(s) omitted)
+(20 more queued - raise FM_SESSION_START_QUEUED_LIMIT or read data/backlog.md for the rest)
 Full task bodies remain available on demand: bin/fm-tasks-axi.sh show <id> --full when compatible tasks-axi is available, or data/backlog.md.
 
 Work under way (state/*.meta)
@@ -127,10 +159,109 @@ Work under way (state/*.meta)
 window=fm-sess:task-01
 kind=ship
 worktree=/tmp/wt/task-01
-pr=https://example.invalid/pull/1
+pr=https://example.invalid/pull/01
 endpoint: alive (backend=tmux window=fm-sess:task-01)
-status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.m9cUEo/evidence/home/state/task-01.status):
-working [at=1]: implementing
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-01.status):
+working: task 01 step 5
+
+--- task-02 ---
+window=fm-sess:task-02
+kind=ship
+worktree=/tmp/wt/task-02
+pr=https://example.invalid/pull/02
+endpoint: dead (backend=tmux window=fm-sess:task-02)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-02.status):
+working: task 02 step 5
+
+--- task-03 ---
+window=fm-sess:task-03
+kind=ship
+worktree=/tmp/wt/task-03
+pr=https://example.invalid/pull/03
+endpoint: dead (backend=tmux window=fm-sess:task-03)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-03.status):
+working: task 03 step 5
+
+--- task-04 ---
+window=fm-sess:task-04
+kind=ship
+worktree=/tmp/wt/task-04
+pr=https://example.invalid/pull/04
+endpoint: dead (backend=tmux window=fm-sess:task-04)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-04.status):
+working: task 04 step 5
+
+--- task-05 ---
+window=fm-sess:task-05
+kind=ship
+worktree=/tmp/wt/task-05
+pr=https://example.invalid/pull/05
+endpoint: dead (backend=tmux window=fm-sess:task-05)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-05.status):
+working: task 05 step 5
+
+--- task-06 ---
+window=fm-sess:task-06
+kind=ship
+worktree=/tmp/wt/task-06
+pr=https://example.invalid/pull/06
+endpoint: dead (backend=tmux window=fm-sess:task-06)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-06.status):
+working: task 06 step 5
+
+--- task-07 ---
+window=fm-sess:task-07
+kind=ship
+worktree=/tmp/wt/task-07
+pr=https://example.invalid/pull/07
+endpoint: dead (backend=tmux window=fm-sess:task-07)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-07.status):
+working: task 07 step 5
+
+--- task-08 ---
+window=fm-sess:task-08
+kind=ship
+worktree=/tmp/wt/task-08
+pr=https://example.invalid/pull/08
+endpoint: dead (backend=tmux window=fm-sess:task-08)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-08.status):
+working: task 08 step 5
+
+--- task-09 ---
+window=fm-sess:task-09
+kind=ship
+worktree=/tmp/wt/task-09
+pr=https://example.invalid/pull/09
+endpoint: dead (backend=tmux window=fm-sess:task-09)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-09.status):
+working: task 09 step 5
+
+--- task-10 ---
+window=fm-sess:task-10
+kind=ship
+worktree=/tmp/wt/task-10
+pr=https://example.invalid/pull/10
+endpoint: dead (backend=tmux window=fm-sess:task-10)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-10.status):
+working: task 10 step 5
+
+--- task-11 ---
+window=fm-sess:task-11
+kind=ship
+worktree=/tmp/wt/task-11
+pr=https://example.invalid/pull/11
+endpoint: dead (backend=tmux window=fm-sess:task-11)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-11.status):
+working: task 11 step 5
+
+--- task-12 ---
+window=fm-sess:task-12
+kind=ship
+worktree=/tmp/wt/task-12
+pr=https://example.invalid/pull/12
+endpoint: dead (backend=tmux window=fm-sess:task-12)
+status tail (last 5 line(s), each capped at 220 characters, wake-EVENT history, not current state; full log: /tmp/fm-session-start-tests.9NOfZy/ev/home/state/task-12.status):
+working: task 12 step 5
 
 Orphan status logs (state/*.status without matching .meta)
 --------------------------------------------------------------------------------
@@ -143,7 +274,7 @@ absent
 ================================================================================
 NETWORK CHECKS
 ================================================================================
-completed off the startup path in 2s: GitHub authentication, dead-secondmate relaunch, secondmate convergence, pending handoff delivery, project clone refresh with its drift reporting, and inactive terminal-outcome reconciliation.
+completed off the startup path in 8s: GitHub authentication, dead-secondmate relaunch, secondmate convergence, pending handoff delivery, project clone refresh with its drift reporting, and inactive terminal-outcome reconciliation.
 (silent - no problems found)
 
 ================================================================================
@@ -160,8 +291,406 @@ ABSENT
 
 data/captain.md
 --------------------------------------------------------------------------------
-# Captain preferences
-- STANDING RULE: always ask before merging into release/*
+CAPTAIN_PREF_0000 keep this preference in mind padding
+CAPTAIN_PREF_0001 keep this preference in mind padding
+CAPTAIN_PREF_0002 keep this preference in mind padding
+CAPTAIN_PREF_0003 keep this preference in mind padding
+CAPTAIN_PREF_0004 keep this preference in mind padding
+CAPTAIN_PREF_0005 keep this preference in mind padding
+CAPTAIN_PREF_0006 keep this preference in mind padding
+CAPTAIN_PREF_0007 keep this preference in mind padding
+CAPTAIN_PREF_0008 keep this preference in mind padding
+CAPTAIN_PREF_0009 keep this preference in mind padding
+CAPTAIN_PREF_0010 keep this preference in mind padding
+CAPTAIN_PREF_0011 keep this preference in mind padding
+CAPTAIN_PREF_0012 keep this preference in mind padding
+CAPTAIN_PREF_0013 keep this preference in mind padding
+CAPTAIN_PREF_0014 keep this preference in mind padding
+CAPTAIN_PREF_0015 keep this preference in mind padding
+CAPTAIN_PREF_0016 keep this preference in mind padding
+CAPTAIN_PREF_0017 keep this preference in mind padding
+CAPTAIN_PREF_0018 keep this preference in mind padding
+CAPTAIN_PREF_0019 keep this preference in mind padding
+CAPTAIN_PREF_0020 keep this preference in mind padding
+CAPTAIN_PREF_0021 keep this preference in mind padding
+CAPTAIN_PREF_0022 keep this preference in mind padding
+CAPTAIN_PREF_0023 keep this preference in mind padding
+CAPTAIN_PREF_0024 keep this preference in mind padding
+CAPTAIN_PREF_0025 keep this preference in mind padding
+CAPTAIN_PREF_0026 keep this preference in mind padding
+CAPTAIN_PREF_0027 keep this preference in mind padding
+CAPTAIN_PREF_0028 keep this preference in mind padding
+CAPTAIN_PREF_0029 keep this preference in mind padding
+CAPTAIN_PREF_0030 keep this preference in mind padding
+CAPTAIN_PREF_0031 keep this preference in mind padding
+CAPTAIN_PREF_0032 keep this preference in mind padding
+CAPTAIN_PREF_0033 keep this preference in mind padding
+CAPTAIN_PREF_0034 keep this preference in mind padding
+CAPTAIN_PREF_0035 keep this preference in mind padding
+CAPTAIN_PREF_0036 keep this preference in mind padding
+CAPTAIN_PREF_0037 keep this preference in mind padding
+CAPTAIN_PREF_0038 keep this preference in mind padding
+CAPTAIN_PREF_0039 keep this preference in mind padding
+CAPTAIN_PREF_0040 keep this preference in mind padding
+CAPTAIN_PREF_0041 keep this preference in mind padding
+CAPTAIN_PREF_0042 keep this preference in mind padding
+CAPTAIN_PREF_0043 keep this preference in mind padding
+CAPTAIN_PREF_0044 keep this preference in mind padding
+CAPTAIN_PREF_0045 keep this preference in mind padding
+CAPTAIN_PREF_0046 keep this preference in mind padding
+CAPTAIN_PREF_0047 keep this preference in mind padding
+CAPTAIN_PREF_0048 keep this preference in mind padding
+CAPTAIN_PREF_0049 keep this preference in mind padding
+CAPTAIN_PREF_0050 keep this preference in mind padding
+CAPTAIN_PREF_0051 keep this preference in mind padding
+CAPTAIN_PREF_0052 keep this preference in mind padding
+CAPTAIN_PREF_0053 keep this preference in mind padding
+CAPTAIN_PREF_0054 keep this preference in mind padding
+CAPTAIN_PREF_0055 keep this preference in mind padding
+CAPTAIN_PREF_0056 keep this preference in mind padding
+CAPTAIN_PREF_0057 keep this preference in mind padding
+CAPTAIN_PREF_0058 keep this preference in mind padding
+CAPTAIN_PREF_0059 keep this preference in mind padding
+CAPTAIN_PREF_0060 keep this preference in mind padding
+CAPTAIN_PREF_0061 keep this preference in mind padding
+CAPTAIN_PREF_0062 keep this preference in mind padding
+CAPTAIN_PREF_0063 keep this preference in mind padding
+CAPTAIN_PREF_0064 keep this preference in mind padding
+CAPTAIN_PREF_0065 keep this preference in mind padding
+CAPTAIN_PREF_0066 keep this preference in mind padding
+CAPTAIN_PREF_0067 keep this preference in mind padding
+CAPTAIN_PREF_0068 keep this preference in mind padding
+CAPTAIN_PREF_0069 keep this preference in mind padding
+CAPTAIN_PREF_0070 keep this preference in mind padding
+CAPTAIN_PREF_0071 keep this preference in mind padding
+CAPTAIN_PREF_0072 keep this preference in mind padding
+CAPTAIN_PREF_0073 keep this preference in mind padding
+CAPTAIN_PREF_0074 keep this preference in mind padding
+CAPTAIN_PREF_0075 keep this preference in mind padding
+CAPTAIN_PREF_0076 keep this preference in mind padding
+CAPTAIN_PREF_0077 keep this preference in mind padding
+CAPTAIN_PREF_0078 keep this preference in mind padding
+CAPTAIN_PREF_0079 keep this preference in mind padding
+CAPTAIN_PREF_0080 keep this preference in mind padding
+CAPTAIN_PREF_0081 keep this preference in mind padding
+CAPTAIN_PREF_0082 keep this preference in mind padding
+CAPTAIN_PREF_0083 keep this preference in mind padding
+CAPTAIN_PREF_0084 keep this preference in mind padding
+CAPTAIN_PREF_0085 keep this preference in mind padding
+CAPTAIN_PREF_0086 keep this preference in mind padding
+CAPTAIN_PREF_0087 keep this preference in mind padding
+CAPTAIN_PREF_0088 keep this preference in mind padding
+CAPTAIN_PREF_0089 keep this preference in mind padding
+CAPTAIN_PREF_0090 keep this preference in mind padding
+CAPTAIN_PREF_0091 keep this preference in mind padding
+CAPTAIN_PREF_0092 keep this preference in mind padding
+CAPTAIN_PREF_0093 keep this preference in mind padding
+CAPTAIN_PREF_0094 keep this preference in mind padding
+CAPTAIN_PREF_0095 keep this preference in mind padding
+CAPTAIN_PREF_0096 keep this preference in mind padding
+CAPTAIN_PREF_0097 keep this preference in mind padding
+CAPTAIN_PREF_0098 keep this preference in mind padding
+CAPTAIN_PREF_0099 keep this preference in mind padding
+CAPTAIN_PREF_0100 keep this preference in mind padding
+CAPTAIN_PREF_0101 keep this preference in mind padding
+CAPTAIN_PREF_0102 keep this preference in mind padding
+CAPTAIN_PREF_0103 keep this preference in mind padding
+CAPTAIN_PREF_0104 keep this preference in mind padding
+CAPTAIN_PREF_0105 keep this preference in mind padding
+CAPTAIN_PREF_0106 keep this preference in mind padding
+CAPTAIN_PREF_0107 keep this preference in mind padding
+CAPTAIN_PREF_0108 keep this preference in mind padding
+CAPTAIN_PREF_0109 keep this preference in mind padding
+CAPTAIN_PREF_0110 keep this preference in mind padding
+CAPTAIN_PREF_0111 keep this preference in mind padding
+CAPTAIN_PREF_0112 keep this preference in mind padding
+CAPTAIN_PREF_0113 keep this preference in mind padding
+CAPTAIN_PREF_0114 keep this preference in mind padding
+CAPTAIN_PREF_0115 keep this preference in mind padding
+CAPTAIN_PREF_0116 keep this preference in mind padding
+CAPTAIN_PREF_0117 keep this preference in mind padding
+CAPTAIN_PREF_0118 keep this preference in mind padding
+CAPTAIN_PREF_0119 keep this preference in mind padding
+CAPTAIN_PREF_0120 keep this preference in mind padding
+CAPTAIN_PREF_0121 keep this preference in mind padding
+CAPTAIN_PREF_0122 keep this preference in mind padding
+CAPTAIN_PREF_0123 keep this preference in mind padding
+CAPTAIN_PREF_0124 keep this preference in mind padding
+CAPTAIN_PREF_0125 keep this preference in mind padding
+CAPTAIN_PREF_0126 keep this preference in mind padding
+CAPTAIN_PREF_0127 keep this preference in mind padding
+CAPTAIN_PREF_0128 keep this preference in mind padding
+CAPTAIN_PREF_0129 keep this preference in mind padding
+CAPTAIN_PREF_0130 keep this preference in mind padding
+CAPTAIN_PREF_0131 keep this preference in mind padding
+CAPTAIN_PREF_0132 keep this preference in mind padding
+CAPTAIN_PREF_0133 keep this preference in mind padding
+CAPTAIN_PREF_0134 keep this preference in mind padding
+CAPTAIN_PREF_0135 keep this preference in mind padding
+CAPTAIN_PREF_0136 keep this preference in mind padding
+CAPTAIN_PREF_0137 keep this preference in mind padding
+CAPTAIN_PREF_0138 keep this preference in mind padding
+CAPTAIN_PREF_0139 keep this preference in mind padding
+CAPTAIN_PREF_0140 keep this preference in mind padding
+CAPTAIN_PREF_0141 keep this preference in mind padding
+CAPTAIN_PREF_0142 keep this preference in mind padding
+CAPTAIN_PREF_0143 keep this preference in mind padding
+CAPTAIN_PREF_0144 keep this preference in mind padding
+CAPTAIN_PREF_0145 keep this preference in mind padding
+CAPTAIN_PREF_0146 keep this preference in mind padding
+CAPTAIN_PREF_0147 keep this preference in mind padding
+CAPTAIN_PREF_0148 keep this preference in mind padding
+CAPTAIN_PREF_0149 keep this preference in mind padding
+CAPTAIN_PREF_0150 keep this preference in mind padding
+CAPTAIN_PREF_0151 keep this preference in mind padding
+CAPTAIN_PREF_0152 keep this preference in mind padding
+CAPTAIN_PREF_0153 keep this preference in mind padding
+CAPTAIN_PREF_0154 keep this preference in mind padding
+CAPTAIN_PREF_0155 keep this preference in mind padding
+CAPTAIN_PREF_0156 keep this preference in mind padding
+CAPTAIN_PREF_0157 keep this preference in mind padding
+CAPTAIN_PREF_0158 keep this preference in mind padding
+CAPTAIN_PREF_0159 keep this preference in mind padding
+CAPTAIN_PREF_0160 keep this preference in mind padding
+CAPTAIN_PREF_0161 keep this preference in mind padding
+CAPTAIN_PREF_0162 keep this preference in mind padding
+CAPTAIN_PREF_0163 keep this preference in mind padding
+CAPTAIN_PREF_0164 keep this preference in mind padding
+CAPTAIN_PREF_0165 keep this preference in mind padding
+CAPTAIN_PREF_0166 keep this preference in mind padding
+CAPTAIN_PREF_0167 keep this preference in mind padding
+CAPTAIN_PREF_0168 keep this preference in mind padding
+CAPTAIN_PREF_0169 keep this preference in mind padding
+CAPTAIN_PREF_0170 keep this preference in mind padding
+CAPTAIN_PREF_0171 keep this preference in mind padding
+CAPTAIN_PREF_0172 keep this preference in mind padding
+CAPTAIN_PREF_0173 keep this preference in mind padding
+CAPTAIN_PREF_0174 keep this preference in mind padding
+CAPTAIN_PREF_0175 keep this preference in mind padding
+CAPTAIN_PREF_0176 keep this preference in mind padding
+CAPTAIN_PREF_0177 keep this preference in mind padding
+CAPTAIN_PREF_0178 keep this preference in mind padding
+CAPTAIN_PREF_0179 keep this preference in mind padding
+CAPTAIN_PREF_0180 keep this preference in mind padding
+CAPTAIN_PREF_0181 keep this preference in mind padding
+CAPTAIN_PREF_0182 keep this preference in mind padding
+CAPTAIN_PREF_0183 keep this preference in mind padding
+CAPTAIN_PREF_0184 keep this preference in mind padding
+CAPTAIN_PREF_0185 keep this preference in mind padding
+CAPTAIN_PREF_0186 keep this preference in mind padding
+CAPTAIN_PREF_0187 keep this preference in mind padding
+CAPTAIN_PREF_0188 keep this preference in mind padding
+CAPTAIN_PREF_0189 keep this preference in mind padding
+CAPTAIN_PREF_0190 keep this preference in mind padding
+CAPTAIN_PREF_0191 keep this preference in mind padding
+CAPTAIN_PREF_0192 keep this preference in mind padding
+CAPTAIN_PREF_0193 keep this preference in mind padding
+CAPTAIN_PREF_0194 keep this preference in mind padding
+CAPTAIN_PREF_0195 keep this preference in mind padding
+CAPTAIN_PREF_0196 keep this preference in mind padding
+CAPTAIN_PREF_0197 keep this preference in mind padding
+CAPTAIN_PREF_0198 keep this preference in mind padding
+CAPTAIN_PREF_0199 keep this preference in mind padding
+CAPTAIN_PREF_0200 keep this preference in mind padding
+CAPTAIN_PREF_0201 keep this preference in mind padding
+CAPTAIN_PREF_0202 keep this preference in mind padding
+CAPTAIN_PREF_0203 keep this preference in mind padding
+CAPTAIN_PREF_0204 keep this preference in mind padding
+CAPTAIN_PREF_0205 keep this preference in mind padding
+CAPTAIN_PREF_0206 keep this preference in mind padding
+CAPTAIN_PREF_0207 keep this preference in mind padding
+CAPTAIN_PREF_0208 keep this preference in mind padding
+CAPTAIN_PREF_0209 keep this preference in mind padding
+CAPTAIN_PREF_0210 keep this preference in mind padding
+CAPTAIN_PREF_0211 keep this preference in mind padding
+CAPTAIN_PREF_0212 keep this preference in mind padding
+CAPTAIN_PREF_0213 keep this preference in mind padding
+CAPTAIN_PREF_0214 keep this preference in mind padding
+CAPTAIN_PREF_0215 keep this preference in mind padding
+CAPTAIN_PREF_0216 keep this preference in mind padding
+CAPTAIN_PREF_0217 keep this preference in mind padding
+CAPTAIN_PREF_0218 keep this preference in mind padding
+CAPTAIN_PREF_0219 keep this preference in mind padding
+CAPTAIN_PREF_0220 keep this preference in mind padding
+CAPTAIN_PREF_0221 keep this preference in mind padding
+CAPTAIN_PREF_0222 keep this preference in mind padding
+CAPTAIN_PREF_0223 keep this preference in mind padding
+CAPTAIN_PREF_0224 keep this preference in mind padding
+CAPTAIN_PREF_0225 keep this preference in mind padding
+CAPTAIN_PREF_0226 keep this preference in mind padding
+CAPTAIN_PREF_0227 keep this preference in mind padding
+CAPTAIN_PREF_0228 keep this preference in mind padding
+CAPTAIN_PREF_0229 keep this preference in mind padding
+CAPTAIN_PREF_0230 keep this preference in mind padding
+CAPTAIN_PREF_0231 keep this preference in mind padding
+CAPTAIN_PREF_0232 keep this preference in mind padding
+CAPTAIN_PREF_0233 keep this preference in mind padding
+CAPTAIN_PREF_0234 keep this preference in mind padding
+CAPTAIN_PREF_0235 keep this preference in mind padding
+CAPTAIN_PREF_0236 keep this preference in mind padding
+CAPTAIN_PREF_0237 keep this preference in mind padding
+CAPTAIN_PREF_0238 keep this preference in mind padding
+CAPTAIN_PREF_0239 keep this preference in mind padding
+CAPTAIN_PREF_0240 keep this preference in mind padding
+CAPTAIN_PREF_0241 keep this preference in mind padding
+CAPTAIN_PREF_0242 keep this preference in mind padding
+CAPTAIN_PREF_0243 keep this preference in mind padding
+CAPTAIN_PREF_0244 keep this preference in mind padding
+CAPTAIN_PREF_0245 keep this preference in mind padding
+CAPTAIN_PREF_0246 keep this preference in mind padding
+CAPTAIN_PREF_0247 keep this preference in mind padding
+CAPTAIN_PREF_0248 keep this preference in mind padding
+CAPTAIN_PREF_0249 keep this preference in mind padding
+CAPTAIN_PREF_0250 keep this preference in mind padding
+CAPTAIN_PREF_0251 keep this preference in mind padding
+CAPTAIN_PREF_0252 keep this preference in mind padding
+CAPTAIN_PREF_0253 keep this preference in mind padding
+CAPTAIN_PREF_0254 keep this preference in mind padding
+CAPTAIN_PREF_0255 keep this preference in mind padding
+CAPTAIN_PREF_0256 keep this preference in mind padding
+CAPTAIN_PREF_0257 keep this preference in mind padding
+CAPTAIN_PREF_0258 keep this preference in mind padding
+CAPTAIN_PREF_0259 keep this preference in mind padding
+CAPTAIN_PREF_0260 keep this preference in mind padding
+CAPTAIN_PREF_0261 keep this preference in mind padding
+CAPTAIN_PREF_0262 keep this preference in mind padding
+CAPTAIN_PREF_0263 keep this preference in mind padding
+CAPTAIN_PREF_0264 keep this preference in mind padding
+CAPTAIN_PREF_0265 keep this preference in mind padding
+CAPTAIN_PREF_0266 keep this preference in mind padding
+CAPTAIN_PREF_0267 keep this preference in mind padding
+CAPTAIN_PREF_0268 keep this preference in mind padding
+CAPTAIN_PREF_0269 keep this preference in mind padding
+CAPTAIN_PREF_0270 keep this preference in mind padding
+CAPTAIN_PREF_0271 keep this preference in mind padding
+CAPTAIN_PREF_0272 keep this preference in mind padding
+CAPTAIN_PREF_0273 keep this preference in mind padding
+CAPTAIN_PREF_0274 keep this preference in mind padding
+CAPTAIN_PREF_0275 keep this preference in mind padding
+CAPTAIN_PREF_0276 keep this preference in mind padding
+CAPTAIN_PREF_0277 keep this preference in mind padding
+CAPTAIN_PREF_0278 keep this preference in mind padding
+CAPTAIN_PREF_0279 keep this preference in mind padding
+CAPTAIN_PREF_0280 keep this preference in mind padding
+CAPTAIN_PREF_0281 keep this preference in mind padding
+CAPTAIN_PREF_0282 keep this preference in mind padding
+CAPTAIN_PREF_0283 keep this preference in mind padding
+CAPTAIN_PREF_0284 keep this preference in mind padding
+CAPTAIN_PREF_0285 keep this preference in mind padding
+CAPTAIN_PREF_0286 keep this preference in mind padding
+CAPTAIN_PREF_0287 keep this preference in mind padding
+CAPTAIN_PREF_0288 keep this preference in mind padding
+CAPTAIN_PREF_0289 keep this preference in mind padding
+CAPTAIN_PREF_0290 keep this preference in mind padding
+CAPTAIN_PREF_0291 keep this preference in mind padding
+CAPTAIN_PREF_0292 keep this preference in mind padding
+CAPTAIN_PREF_0293 keep this preference in mind padding
+CAPTAIN_PREF_0294 keep this preference in mind padding
+CAPTAIN_PREF_0295 keep this preference in mind padding
+CAPTAIN_PREF_0296 keep this preference in mind padding
+CAPTAIN_PREF_0297 keep this preference in mind padding
+CAPTAIN_PREF_0298 keep this preference in mind padding
+CAPTAIN_PREF_0299 keep this preference in mind padding
+CAPTAIN_PREF_0300 keep this preference in mind padding
+CAPTAIN_PREF_0301 keep this preference in mind padding
+CAPTAIN_PREF_0302 keep this preference in mind padding
+CAPTAIN_PREF_0303 keep this preference in mind padding
+CAPTAIN_PREF_0304 keep this preference in mind padding
+CAPTAIN_PREF_0305 keep this preference in mind padding
+CAPTAIN_PREF_0306 keep this preference in mind padding
+CAPTAIN_PREF_0307 keep this preference in mind padding
+CAPTAIN_PREF_0308 keep this preference in mind padding
+CAPTAIN_PREF_0309 keep this preference in mind padding
+CAPTAIN_PREF_0310 keep this preference in mind padding
+CAPTAIN_PREF_0311 keep this preference in mind padding
+CAPTAIN_PREF_0312 keep this preference in mind padding
+CAPTAIN_PREF_0313 keep this preference in mind padding
+CAPTAIN_PREF_0314 keep this preference in mind padding
+CAPTAIN_PREF_0315 keep this preference in mind padding
+CAPTAIN_PREF_0316 keep this preference in mind padding
+CAPTAIN_PREF_0317 keep this preference in mind padding
+CAPTAIN_PREF_0318 keep this preference in mind padding
+CAPTAIN_PREF_0319 keep this preference in mind padding
+CAPTAIN_PREF_0320 keep this preference in mind padding
+CAPTAIN_PREF_0321 keep this preference in mind padding
+CAPTAIN_PREF_0322 keep this preference in mind padding
+CAPTAIN_PREF_0323 keep this preference in mind padding
+CAPTAIN_PREF_0324 keep this preference in mind padding
+CAPTAIN_PREF_0325 keep this preference in mind padding
+CAPTAIN_PREF_0326 keep this preference in mind padding
+CAPTAIN_PREF_0327 keep this preference in mind padding
+CAPTAIN_PREF_0328 keep this preference in mind padding
+CAPTAIN_PREF_0329 keep this preference in mind padding
+CAPTAIN_PREF_0330 keep this preference in mind padding
+CAPTAIN_PREF_0331 keep this preference in mind padding
+CAPTAIN_PREF_0332 keep this preference in mind padding
+CAPTAIN_PREF_0333 keep this preference in mind padding
+CAPTAIN_PREF_0334 keep this preference in mind padding
+CAPTAIN_PREF_0335 keep this preference in mind padding
+CAPTAIN_PREF_0336 keep this preference in mind padding
+CAPTAIN_PREF_0337 keep this preference in mind padding
+CAPTAIN_PREF_0338 keep this preference in mind padding
+CAPTAIN_PREF_0339 keep this preference in mind padding
+CAPTAIN_PREF_0340 keep this preference in mind padding
+CAPTAIN_PREF_0341 keep this preference in mind padding
+CAPTAIN_PREF_0342 keep this preference in mind padding
+CAPTAIN_PREF_0343 keep this preference in mind padding
+CAPTAIN_PREF_0344 keep this preference in mind padding
+CAPTAIN_PREF_0345 keep this preference in mind padding
+CAPTAIN_PREF_0346 keep this preference in mind padding
+CAPTAIN_PREF_0347 keep this preference in mind padding
+CAPTAIN_PREF_0348 keep this preference in mind padding
+CAPTAIN_PREF_0349 keep this preference in mind padding
+CAPTAIN_PREF_0350 keep this preference in mind padding
+CAPTAIN_PREF_0351 keep this preference in mind padding
+CAPTAIN_PREF_0352 keep this preference in mind padding
+CAPTAIN_PREF_0353 keep this preference in mind padding
+CAPTAIN_PREF_0354 keep this preference in mind padding
+CAPTAIN_PREF_0355 keep this preference in mind padding
+CAPTAIN_PREF_0356 keep this preference in mind padding
+CAPTAIN_PREF_0357 keep this preference in mind padding
+CAPTAIN_PREF_0358 keep this preference in mind padding
+CAPTAIN_PREF_0359 keep this preference in mind padding
+CAPTAIN_PREF_0360 keep this preference in mind padding
+CAPTAIN_PREF_0361 keep this preference in mind padding
+CAPTAIN_PREF_0362 keep this preference in mind padding
+CAPTAIN_PREF_0363 keep this preference in mind padding
+CAPTAIN_PREF_0364 keep this preference in mind padding
+CAPTAIN_PREF_0365 keep this preference in mind padding
+CAPTAIN_PREF_0366 keep this preference in mind padding
+CAPTAIN_PREF_0367 keep this preference in mind padding
+CAPTAIN_PREF_0368 keep this preference in mind padding
+CAPTAIN_PREF_0369 keep this preference in mind padding
+CAPTAIN_PREF_0370 keep this preference in mind padding
+CAPTAIN_PREF_0371 keep this preference in mind padding
+CAPTAIN_PREF_0372 keep this preference in mind padding
+CAPTAIN_PREF_0373 keep this preference in mind padding
+CAPTAIN_PREF_0374 keep this preference in mind padding
+CAPTAIN_PREF_0375 keep this preference in mind padding
+CAPTAIN_PREF_0376 keep this preference in mind padding
+CAPTAIN_PREF_0377 keep this preference in mind padding
+CAPTAIN_PREF_0378 keep this preference in mind padding
+CAPTAIN_PREF_0379 keep this preference in mind padding
+CAPTAIN_PREF_0380 keep this preference in mind padding
+CAPTAIN_PREF_0381 keep this preference in mind padding
+CAPTAIN_PREF_0382 keep this preference in mind padding
+CAPTAIN_PREF_0383 keep this preference in mind padding
+CAPTAIN_PREF_0384 keep this preference in mind padding
+CAPTAIN_PREF_0385 keep this preference in mind padding
+CAPTAIN_PREF_0386 keep this preference in mind padding
+CAPTAIN_PREF_0387 keep this preference in mind padding
+CAPTAIN_PREF_0388 keep this preference in mind padding
+CAPTAIN_PREF_0389 keep this preference in mind padding
+CAPTAIN_PREF_0390 keep this preference in mind padding
+CAPTAIN_PREF_0391 keep this preference in mind padding
+CAPTAIN_PREF_0392 keep this preference in mind padding
+CAPTAIN_PREF_0393 keep this preference in mind padding
+CAPTAIN_PREF_0394 keep this preference in mind padding
+CAPTAIN_PREF_0395 keep this preference in mind padding
+CAPTAIN_PREF_0396 keep this preference in mind padding
+CAPTAIN_PREF_0397 keep this preference in mind padding
+CAPTAIN_PREF_0398 keep this preference in mind padding
+CAPTAIN_PREF_0399 keep this preference in mind padding
 
 data/captain-shared.md (shared, main-authoritative, read-only in secondmate homes)
 --------------------------------------------------------------------------------
@@ -169,8 +698,156 @@ ABSENT
 
 data/learnings.md
 --------------------------------------------------------------------------------
-# Learnings
-- curated fact A
+LEARNING_0000 a curated fleet fact padding padding
+LEARNING_0001 a curated fleet fact padding padding
+LEARNING_0002 a curated fleet fact padding padding
+LEARNING_0003 a curated fleet fact padding padding
+LEARNING_0004 a curated fleet fact padding padding
+LEARNING_0005 a curated fleet fact padding padding
+LEARNING_0006 a curated fleet fact padding padding
+LEARNING_0007 a curated fleet fact padding padding
+LEARNING_0008 a curated fleet fact padding padding
+LEARNING_0009 a curated fleet fact padding padding
+LEARNING_0010 a curated fleet fact padding padding
+LEARNING_0011 a curated fleet fact padding padding
+LEARNING_0012 a curated fleet fact padding padding
+LEARNING_0013 a curated fleet fact padding padding
+LEARNING_0014 a curated fleet fact padding padding
+LEARNING_0015 a curated fleet fact padding padding
+LEARNING_0016 a curated fleet fact padding padding
+LEARNING_0017 a curated fleet fact padding padding
+LEARNING_0018 a curated fleet fact padding padding
+LEARNING_0019 a curated fleet fact padding padding
+LEARNING_0020 a curated fleet fact padding padding
+LEARNING_0021 a curated fleet fact padding padding
+LEARNING_0022 a curated fleet fact padding padding
+LEARNING_0023 a curated fleet fact padding padding
+LEARNING_0024 a curated fleet fact padding padding
+LEARNING_0025 a curated fleet fact padding padding
+LEARNING_0026 a curated fleet fact padding padding
+LEARNING_0027 a curated fleet fact padding padding
+LEARNING_0028 a curated fleet fact padding padding
+LEARNING_0029 a curated fleet fact padding padding
+LEARNING_0030 a curated fleet fact padding padding
+LEARNING_0031 a curated fleet fact padding padding
+LEARNING_0032 a curated fleet fact padding padding
+LEARNING_0033 a curated fleet fact padding padding
+LEARNING_0034 a curated fleet fact padding padding
+LEARNING_0035 a curated fleet fact padding padding
+LEARNING_0036 a curated fleet fact padding padding
+LEARNING_0037 a curated fleet fact padding padding
+LEARNING_0038 a curated fleet fact padding padding
+LEARNING_0039 a curated fleet fact padding padding
+LEARNING_0040 a curated fleet fact padding padding
+LEARNING_0041 a curated fleet fact padding padding
+LEARNING_0042 a curated fleet fact padding padding
+LEARNING_0043 a curated fleet fact padding padding
+LEARNING_0044 a curated fleet fact padding padding
+LEARNING_0045 a curated fleet fact padding padding
+LEARNING_0046 a curated fleet fact padding padding
+LEARNING_0047 a curated fleet fact padding padding
+LEARNING_0048 a curated fleet fact padding padding
+LEARNING_0049 a curated fleet fact padding padding
+LEARNING_0050 a curated fleet fact padding padding
+LEARNING_0051 a curated fleet fact padding padding
+LEARNING_0052 a curated fleet fact padding padding
+LEARNING_0053 a curated fleet fact padding padding
+LEARNING_0054 a curated fleet fact padding padding
+LEARNING_0055 a curated fleet fact padding padding
+LEARNING_0056 a curated fleet fact padding padding
+LEARNING_0057 a curated fleet fact padding padding
+LEARNING_0058 a curated fleet fact padding padding
+LEARNING_0059 a curated fleet fact padding padding
+LEARNING_0060 a curated fleet fact padding padding
+LEARNING_0061 a curated fleet fact padding padding
+LEARNING_0062 a curated fleet fact padding padding
+LEARNING_0063 a curated fleet fact padding padding
+LEARNING_0064 a curated fleet fact padding padding
+LEARNING_0065 a curated fleet fact padding padding
+LEARNING_0066 a curated fleet fact padding padding
+LEARNING_0067 a curated fleet fact padding padding
+LEARNING_0068 a curated fleet fact padding padding
+LEARNING_0069 a curated fleet fact padding padding
+LEARNING_0070 a curated fleet fact padding padding
+LEARNING_0071 a curated fleet fact padding padding
+LEARNING_0072 a curated fleet fact padding padding
+LEARNING_0073 a curated fleet fact padding padding
+LEARNING_0074 a curated fleet fact padding padding
+LEARNING_0075 a curated fleet fact padding padding
+LEARNING_0076 a curated fleet fact padding padding
+LEARNING_0077 a curated fleet fact padding padding
+LEARNING_0078 a curated fleet fact padding padding
+LEARNING_0079 a curated fleet fact padding padding
+LEARNING_0080 a curated fleet fact padding padding
+LEARNING_0081 a curated fleet fact padding padding
+LEARNING_0082 a curated fleet fact padding padding
+LEARNING_0083 a curated fleet fact padding padding
+LEARNING_0084 a curated fleet fact padding padding
+LEARNING_0085 a curated fleet fact padding padding
+LEARNING_0086 a curated fleet fact padding padding
+LEARNING_0087 a curated fleet fact padding padding
+LEARNING_0088 a curated fleet fact padding padding
+LEARNING_0089 a curated fleet fact padding padding
+LEARNING_0090 a curated fleet fact padding padding
+LEARNING_0091 a curated fleet fact padding padding
+LEARNING_0092 a curated fleet fact padding padding
+LEARNING_0093 a curated fleet fact padding padding
+LEARNING_0094 a curated fleet fact padding padding
+LEARNING_0095 a curated fleet fact padding padding
+LEARNING_0096 a curated fleet fact padding padding
+LEARNING_0097 a curated fleet fact padding padding
+LEARNING_0098 a curated fleet fact padding padding
+LEARNING_0099 a curated fleet fact padding padding
+LEARNING_0100 a curated fleet fact padding padding
+LEARNING_0101 a curated fleet fact padding padding
+LEARNING_0102 a curated fleet fact padding padding
+LEARNING_0103 a curated fleet fact padding padding
+LEARNING_0104 a curated fleet fact padding padding
+LEARNING_0105 a curated fleet fact padding padding
+LEARNING_0106 a curated fleet fact padding padding
+LEARNING_0107 a curated fleet fact padding padding
+LEARNING_0108 a curated fleet fact padding padding
+LEARNING_0109 a curated fleet fact padding padding
+LEARNING_0110 a curated fleet fact padding padding
+LEARNING_0111 a curated fleet fact padding padding
+LEARNING_0112 a curated fleet fact padding padding
+LEARNING_0113 a curated fleet fact padding padding
+LEARNING_0114 a curated fleet fact padding padding
+LEARNING_0115 a curated fleet fact padding padding
+LEARNING_0116 a curated fleet fact padding padding
+LEARNING_0117 a curated fleet fact padding padding
+LEARNING_0118 a curated fleet fact padding padding
+LEARNING_0119 a curated fleet fact padding padding
+LEARNING_0120 a curated fleet fact padding padding
+LEARNING_0121 a curated fleet fact padding padding
+LEARNING_0122 a curated fleet fact padding padding
+LEARNING_0123 a curated fleet fact padding padding
+LEARNING_0124 a curated fleet fact padding padding
+LEARNING_0125 a curated fleet fact padding padding
+LEARNING_0126 a curated fleet fact padding padding
+LEARNING_0127 a curated fleet fact padding padding
+LEARNING_0128 a curated fleet fact padding padding
+LEARNING_0129 a curated fleet fact padding padding
+LEARNING_0130 a curated fleet fact padding padding
+LEARNING_0131 a curated fleet fact padding padding
+LEARNING_0132 a curated fleet fact padding padding
+LEARNING_0133 a curated fleet fact padding padding
+LEARNING_0134 a curated fleet fact padding padding
+LEARNING_0135 a curated fleet fact padding padding
+LEARNING_0136 a curated fleet fact padding padding
+LEARNING_0137 a curated fleet fact padding padding
+LEARNING_0138 a curated fleet fact padding padding
+LEARNING_0139 a curated fleet fact padding padding
+LEARNING_0140 a curated fleet fact padding padding
+LEARNING_0141 a curated fleet fact padding padding
+LEARNING_0142 a curated fleet fact padding padding
+LEARNING_0143 a curated fleet fact padding padding
+LEARNING_0144 a curated fleet fact padding padding
+LEARNING_0145 a curated fleet fact padding padding
+LEARNING_0146 a curated fleet fact padding padding
+LEARNING_0147 a curated fleet fact padding padding
+LEARNING_0148 a curated fleet fact padding padding
+LEARNING_0149 a curated fleet fact padding padding
 
 ================================================================================
 NEXT STEP
